@@ -35,7 +35,7 @@ class Student:
         self.avg = avg
         self.grade = grade
     
-    def __str__(self):
+    def res(self):
         return f"\nDetails of student : \n Student_ID : {self.s_id}\n Student Name : {self.name}  \n  Average marks : {self.avg} \n Grade : {self.grade}\n"
 
 flag = True
@@ -70,8 +70,7 @@ class Calculations:
         # print(f"After avg {average}")
         return average
 
-calc = Calculations()
-average_func = calc.avg(n,grades = detail_dict)
+
 
 class Rank:
     def __init__(self):
@@ -98,9 +97,10 @@ class Rank:
 S_id = input("\nEnter the ID of the student : ")
 std_name = input("Enter the Name of the Student : ")
 
-if not std_name.isnumeric():
-
-    n = int(input("Enter the number of Subjects : "))
+if not std_name.isspace() or std_name is not None or not std_name.isnumeric():
+    print(std_name,"u")
+    # n = int(input("Enter the number of Subjects : "))
+    n=3
     if n>0:
         subj_obj= Subject(n)
 
@@ -109,13 +109,17 @@ if not std_name.isnumeric():
             #Details class object call
             det = Details()
             detail_dict = det.data(n)
+
+            calc = Calculations()
+            average_func = calc.avg(n,grades = detail_dict)
+
             # Rank class object call
             rnk = Rank()
             grade = rnk.grade_func(average_func)
 
             # STUDENT Class object calling 
             stu = Student(S_id , std_name ,average_func , grade)
-            print(stu)
+            print(stu.res())
 
         else:
             print("Marks can be entered only between 0-100")
