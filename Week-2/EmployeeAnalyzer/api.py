@@ -1,4 +1,5 @@
 import requests
+
 NATIONALIZE_API_URL = "https://api.nationalize.io"
 
 COUNTRY_NAMES = {
@@ -60,3 +61,4 @@ def predict_nationality(emp_name):
     except Exception:
         return ("Nationality Prediction Service unavailable.","System")
     
+

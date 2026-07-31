@@ -1,4 +1,5 @@
 from reader import load_employees
+
 from api import predict_nationality
 
 def main():
@@ -12,6 +13,7 @@ def main():
     if "error" in result:
         print(result["error"])
     else:
+
         print(f"Employee Name : {result['name']}")
         print(f"Predictions   : {result['count']}")
         print("\nPossible Nationalities:\n")
@@ -23,5 +25,6 @@ def main():
                 f"- {country['probability']}%"
             )
     
+
 if __name__ == "__main__":
     main()
