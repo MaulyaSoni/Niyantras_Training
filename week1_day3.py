@@ -7,12 +7,20 @@ def operations(func):
     return wrapper
 
 
+def get_int(prompt, error_message):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print(error_message)
+
+
 print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
 
 # Property concept for validating the subject
 class Subject:
     def __init__(self , subj):
-        self._subj = subj
+        self.subj = subj
     @property
     #Getter method 
     def subj(self):
@@ -23,9 +31,9 @@ class Subject:
     @subj.setter
     def subj(self,val):
         print("\n Validating number of subjects ")
-        if val == 0 :
+        if val <= 0:
             raise ValueError("\n Subjects can't be zero or negative \n")
-        self._subj
+        self._subj = val
 
 class Student:
     #Function will execute at last when to show the full detail of Students
@@ -46,14 +54,16 @@ class Details:
         
     @operations
     def data(self,n):
+        global flag
         self.n = n 
         grade_dict={}
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
-            marks = int(input("Enter marks between (0-100): "))
-            if marks > 100 or marks < 0:
-                flag = False
-                break 
+            while True:
+                marks = get_int("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                if 0 <= marks <= 100:
+                    break
+                print("Marks can be entered only between 0-100")
             grade_dict[subj] = marks
         return grade_dict
 
@@ -97,10 +107,8 @@ class Rank:
 S_id = input("\nEnter the ID of the student : ")
 std_name = input("Enter the Name of the Student : ")
 
-if not std_name.isspace() or std_name is not None or not std_name.isnumeric():
-    print(std_name,"u")
-    # n = int(input("Enter the number of Subjects : "))
-    n=3
+if std_name.replace(" ", "").isalpha():
+    n = get_int("Enter the number of Subjects : ", "Please enter a whole number for the number of subjects.")
     if n>0:
         subj_obj= Subject(n)
 

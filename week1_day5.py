@@ -1,6 +1,14 @@
 from abc import ABC  , abstractmethod
 from dataclasses import dataclass
 
+
+def get_int(prompt, error_message):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print(error_message)
+
 @dataclass
 class StudentDetails():
     s_id : str
@@ -26,7 +34,11 @@ class StudentDetails():
 # std_name = input("Enter the Name of the Student : ")    
 # n = int(input("Enter the Number of Subjects : "))
 
-st = StudentDetails(s_id="23dit072",std_name="MS",n=2)
+s_id = input("\nEnter the ID of the student : ")
+std_name = input("Enter the Name of the Student : ")    
+n = get_int("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
+
+st = StudentDetails(s_id=s_id,std_name=std_name,n=n)
 s_id , std_name , n = st.card()
 
 # Abstract Class 
@@ -52,10 +64,11 @@ class MarksDetails(Student):
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-                marks = int(input("Enter marks between (0-100): "))
+                marks = get_int("Enter marks between (0-100): ", "Please enter a whole number for marks.")
                 if 0 <= marks <= 100:
                     grade_dict[subj] = marks
                     break
+                print("Marks can be entered only between 0-100")
                         
         return grade_dict
 
@@ -119,7 +132,7 @@ flag = True
 
 # name condition 
 
-if not std_name.isnumeric() or n>0: # isalpha() 
+if std_name.replace(" ", "").isalpha() and n>0: # isalpha() 
     # # number of subject condition 
     # if n>0:
 

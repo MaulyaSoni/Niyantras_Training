@@ -37,17 +37,25 @@ def end_part(func):
         return result
     return wrapper
 
+
+def get_int(prompt, error_message):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print(error_message)
+
 print("\nWelcome to the Grade Calculator Application Tool (CLI MODE)")
 
 # Details of Student 
 id_no = input("\nEnter your id :")
 name = input("Enter your name:")
 
-if name.isnumeric():
+if not name.replace(" ", "").isalpha():
     print("!! Invalid Output!! , Only Letters are allowed in the Name...")
 
 else:
-    n = int(input("\nEnter the number of subjects: "))
+    n = get_int("\nEnter the number of subjects: ", "Please enter a whole number for the number of subjects.")
 
     if(n == 0):
         print("!!! Invalid input !!! , Please enter at least one Subject to calculate the average")
@@ -60,7 +68,11 @@ else:
         def data(n):
             for _ in range(n):
                 subj = input("Enter subject: ")
-                marks = int(input("Enter marks between (0-100): ")) 
+                while True:
+                    marks = get_int("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                    if 0 <= marks <= 100:
+                        break
+                    print("!!! Invalid input !!! , Please enter marks between 0-100")
                 grade_dict[subj] = marks
             return grade_dict
         grade_dict = data(n)
@@ -79,7 +91,6 @@ else:
         # Total and Average using CLOSURE concept
         def cls_outer(grade_dict):
             def cls_inner(marks_total):
-                marks_total = sum(grade_dict.values())
                 aver = marks_total/n
                 return aver
             return cls_inner
@@ -112,4 +123,4 @@ else:
         def details(*args, **kwargs):
             print(f"\nDetails of student : {id_no} {name} \nTotal Score : ({Total}/{n*100}) \nAverage marks : {Avg} \nGrade : {gr}\n")
         
-        details(Avg , Total ,gr,  id = id , name = name)
+        details(Avg , Total ,gr, student_id = id_no, name = name)
