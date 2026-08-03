@@ -1,3 +1,4 @@
+from week1_day1_grade_calc import get_int_input
 def operations(func):
     def wrapper(*args):
         print("\n...Algorithm is running...")
@@ -9,10 +10,9 @@ def operations(func):
 
 print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
 
-# Property concept for validating the subject
 class Subject:
     def __init__(self , subj):
-        self._subj = subj
+        self.subj = subj
     @property
     #Getter method 
     def subj(self):
@@ -23,12 +23,11 @@ class Subject:
     @subj.setter
     def subj(self,val):
         print("\n Validating number of subjects ")
-        if val == 0 :
+        if val <= 0:
             raise ValueError("\n Subjects can't be zero or negative \n")
-        self._subj
+        self._subj = val
 
 class Student:
-    #Function will execute at last when to show the full detail of Students
     def __init__(self, s_id , name , avg , grade):
         self.s_id = s_id
         self.name = name
@@ -46,14 +45,16 @@ class Details:
         
     @operations
     def data(self,n):
+        global flag
         self.n = n 
         grade_dict={}
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
-            marks = int(input("Enter marks between (0-100): "))
-            if marks > 100 or marks < 0:
-                flag = False
-                break 
+            while True:
+                marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                if 0 <= marks <= 100:
+                    break
+                print("Marks can be entered only between 0-100")
             grade_dict[subj] = marks
         return grade_dict
 
@@ -67,7 +68,6 @@ class Calculations:
         total = sum(grades.values())
         average = total/n
         average= round(average,3)
-        # print(f"After avg {average}")
         return average
 
 
@@ -75,7 +75,6 @@ class Calculations:
 class Rank:
     def __init__(self):
         pass
-    # Function for Calculating GRADE
     def grade_func(self,avg):
         self.avg = avg
         grade =''
@@ -97,27 +96,22 @@ class Rank:
 S_id = input("\nEnter the ID of the student : ")
 std_name = input("Enter the Name of the Student : ")
 
-if not std_name.isspace() or std_name is not None or not std_name.isnumeric():
-    print(std_name,"u")
-    # n = int(input("Enter the number of Subjects : "))
-    n=3
+if std_name.replace(" ", "").isalpha():
+    n = get_int_input("\nEnter the number of Subjects : ", "Please enter a whole number for the number of subjects.")
     if n>0:
         subj_obj= Subject(n)
 
         if flag == True:
             
-            #Details class object call
             det = Details()
             detail_dict = det.data(n)
 
             calc = Calculations()
             average_func = calc.avg(n,grades = detail_dict)
 
-            # Rank class object call
             rnk = Rank()
             grade = rnk.grade_func(average_func)
 
-            # STUDENT Class object calling 
             stu = Student(S_id , std_name ,average_func , grade)
             print(stu.res())
 

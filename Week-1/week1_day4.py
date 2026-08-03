@@ -1,4 +1,5 @@
 from abc import ABC  , abstractmethod
+from week1_day1_grade_calc import get_int_input
 
 class StudentDetails:
     def __init__(self):
@@ -20,7 +21,8 @@ class Student(ABC):
 
 # Composite Class 1 
 class MarksDetails(Student):
-    def __init__(self):
+    def __init__(self, s_id="", name=""):
+        super().__init__(s_id, name)
         print("MarksDetails Class object created ")
 
     def data(self,n):
@@ -29,10 +31,11 @@ class MarksDetails(Student):
         grade_dict={}
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
-            marks = int(input("Enter marks between (0-100): "))
-
-            if marks > 100 or marks < 0:
-               flag = False
+            while True:
+                marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                if 0 <= marks <= 100:
+                    break
+                print("Marks can be entered only between 0-100")
             grade_dict[subj] = marks
         
         return grade_dict
@@ -55,12 +58,13 @@ class Calculations:
         
         return total , average
 
+
 # Composite class 3
 class Rank:
     def __init__(self):
         print("Rank class object created")
 
-    def grade_func(self):
+    def grade_func(self, avg):
         grade =''
         if avg >= 90 and avg <= 100:
             grade = 'AA'
@@ -88,15 +92,16 @@ class Result:
     def __str__(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
+
 # main part 
 flag = True 
 sd = StudentDetails()
 s_id , std_name = sd.card()
 
-# name condition 
-if not std_name.isnumeric():
+
+if std_name.replace(" ", "").isalpha():
     # number of subject condition 
-    n = int(input("Enter the Number of Subjects : "))
+    n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
     if n>0:
         cal_obj= Calculations()
         t_marks , avg = cal_obj.avg(n)
@@ -104,7 +109,7 @@ if not std_name.isnumeric():
         # marks negavtive condition
         if flag == True:
             rnk= Rank()
-            gr = rnk.grade_func()
+            gr = rnk.grade_func(avg)
 
             res = Result(s_id,std_name,avg,gr,t_marks,n)
             print(res)
