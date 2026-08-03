@@ -2,7 +2,6 @@ from collections import Counter, defaultdict, namedtuple
 import csv
 import itertools
 
-# namedtuple , a function that generates custom class , here the EmployeeRecordClass 
 EmployeeRecordClass = namedtuple(
     "EmployeeRecordClass"
     , 
