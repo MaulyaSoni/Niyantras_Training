@@ -22,7 +22,7 @@ def main():
             print(
                 f"{country['country_name']} "
                 f"({country['country_code']}) "
-                f"- {country['probability']}%"
+                f"{country['probability']}%"
             )
     
 

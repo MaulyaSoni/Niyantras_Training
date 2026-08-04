@@ -4,7 +4,7 @@ from collections import namedtuple
 import sys
 
 logging.basicConfig(
-    filename="processing_file.log",
+    filename="processing_file_EA.log",
     level=logging.ERROR,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )

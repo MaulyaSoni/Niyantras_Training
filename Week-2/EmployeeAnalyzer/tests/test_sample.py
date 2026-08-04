@@ -34,4 +34,3 @@ def test_valid_age(valid_age):
 def test_invalid_age():
     with pytest.raises(ValueError):
         validate_age(-25)
-

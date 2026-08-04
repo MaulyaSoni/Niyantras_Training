@@ -16,20 +16,32 @@ def is_linux():
         raise OSException("This code can only run on Linux systems.")
     print("Doing the exception handling in the linux system")
 
-logging.basicConfig(filename='processing_file.log', level=logging.ERROR)
+logging.basicConfig(
+    filename="processing_file_W2.log",
+    level=logging.ERROR,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+# def match_case(data):
+#     age = data  
+#     match data:
+#         case data if age <= 0:
+#             print("working")
+#         case TypeError:
+#             print("TypeError")
 
 try:
     is_linux ()
 
-    with open('tech_company_employee_data_1000.csv','r',newline='') as file:
+    with open('csv2.csv','r',newline='') as file:
         reader = list(csv.reader(file))
         for row in reader[:10]:
-          
+            
             try:
                 if len(row) < 3:
                     raise IndexError("Row does'nt contain age column")
-
                 age = int(row[2])  
+              
                 if age <= 0:
                     raise AgeException(f"Age : {age} can't be negative or Zero") 
                                  
@@ -46,4 +58,3 @@ else:
 
 finally:
     print("Executing the final block")
-
