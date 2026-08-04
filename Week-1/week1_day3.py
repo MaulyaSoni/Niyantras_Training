@@ -1,4 +1,4 @@
-from week1_day1_grade_calc import get_int_input
+from week1_day1_grade_calc import get_int_input , grade_func
 def operations(func):
     def wrapper(*args):
         print("\n...Algorithm is running...")
@@ -6,9 +6,6 @@ def operations(func):
         print(f"\n...Calculations for {func.__name__!r} fucntion is Completed... \n")
         return result
     return wrapper
-
-
-print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
 
 class Subject:
     def __init__(self , subj):
@@ -28,16 +25,17 @@ class Subject:
         self._subj = val
 
 class Student:
-    def __init__(self, s_id , name , avg , grade):
+    def __init__(self, s_id , name , total , avg , grade , n):
         self.s_id = s_id
         self.name = name
+        self.total = total
         self.avg = avg
         self.grade = grade
+        self.n = n
     
     def res(self):
-        return f"\nDetails of student : \n Student_ID : {self.s_id}\n Student Name : {self.name}  \n  Average marks : {self.avg} \n Grade : {self.grade}\n"
+        return f"\nDetails of student : \n Student_ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks : {self.total}/{self.n*100} \n  Average marks : {self.avg} \n Grade : {self.grade}\n"
 
-flag = True
 
 class Details:
     def __init__(self):
@@ -51,7 +49,7 @@ class Details:
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-                marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
                 if 0 <= marks <= 100:
                     break
                 print("Marks can be entered only between 0-100")
@@ -68,56 +66,49 @@ class Calculations:
         total = sum(grades.values())
         average = total/n
         average= round(average,3)
-        return average
+        return total , average
 
 
 
 class Rank:
     def __init__(self):
         pass
-    def grade_func(self,avg):
+
+    def grade_function(self,avg):
         self.avg = avg
-        grade =''
+        return grade_func(self.avg)
 
-        if avg >= 90 and avg <= 100:
-            grade = 'AA'
-        elif avg >= 80 and avg < 90:
-            grade = 'AB'
-        elif avg >= 70 and avg < 80:
-            grade = 'BB'
-        elif avg >= 60 and avg < 70:
-            grade = 'BC'
-        elif avg >=50 and avg < 60:
-            grade = 'CC'
+if __name__ == "__main__":
+    
+    print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
+    
+    flag = True
+    
+    S_id = input("\nEnter the ID of the student : ")
+    std_name = input("Enter the Name of the Student : ")
+
+    if std_name.replace(" ", "").isalpha():
+        n = get_int_input("\nEnter the number of Subjects : ", "Please enter a whole number for the number of subjects.")
+        if n>0:
+            subj_obj= Subject(n)
+
+            if flag == True:
+                
+                det = Details()
+                detail_dict = det.data(n)
+
+                calc = Calculations()
+                total , average_func = calc.avg(n,grades = detail_dict)
+
+                rnk = Rank()
+                grade = rnk.grade_function(average_func)
+
+                stu = Student(S_id , std_name ,total ,average_func , grade,n)
+                print(stu.res())
+
+            else:
+                print("Marks can be entered only between 0-100")
         else:
-            grade = 'D'
-        return grade
-
-S_id = input("\nEnter the ID of the student : ")
-std_name = input("Enter the Name of the Student : ")
-
-if std_name.replace(" ", "").isalpha():
-    n = get_int_input("\nEnter the number of Subjects : ", "Please enter a whole number for the number of subjects.")
-    if n>0:
-        subj_obj= Subject(n)
-
-        if flag == True:
-            
-            det = Details()
-            detail_dict = det.data(n)
-
-            calc = Calculations()
-            average_func = calc.avg(n,grades = detail_dict)
-
-            rnk = Rank()
-            grade = rnk.grade_func(average_func)
-
-            stu = Student(S_id , std_name ,average_func , grade)
-            print(stu.res())
-
-        else:
-            print("Marks can be entered only between 0-100")
+            print("Subjects can't be less than Zero or Negative ")
     else:
-        print("Subjects can't be less than Zero or Negative ")
-else:
-    print("Name can't be contain any numbers")
+        print("Name can't be contain any numbers")

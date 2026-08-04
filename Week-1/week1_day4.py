@@ -1,5 +1,5 @@
 from abc import ABC  , abstractmethod
-from week1_day1_grade_calc import get_int_input
+from week1_day1_grade_calc import get_int_input , grade_func
 
 class StudentDetails:
     def __init__(self):
@@ -32,7 +32,7 @@ class MarksDetails(Student):
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-                marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
                 if 0 <= marks <= 100:
                     break
                 print("Marks can be entered only between 0-100")
@@ -64,21 +64,10 @@ class Rank:
     def __init__(self):
         print("Rank class object created")
 
-    def grade_func(self, avg):
+    def grade_function(self, avg):
         grade =''
-        if avg >= 90 and avg <= 100:
-            grade = 'AA'
-        elif avg >= 80 and avg < 90:
-            grade = 'AB'
-        elif avg >= 70 and avg < 80:
-            grade = 'BB'
-        elif avg >= 60 and avg < 70:
-            grade = 'BC'
-        elif avg >=50 and avg < 60:
-            grade = 'CC'
-        else:
-            grade = 'D'
-        return grade
+        self.avg = avg
+        return grade_func(self.avg)
 
 class Result:
     def __init__(self,s_id,name,avg,grade,t_marks,n):
@@ -92,34 +81,34 @@ class Result:
     def __str__(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
+if __name__ == "__main__":
 
-# main part 
-flag = True 
-sd = StudentDetails()
-s_id , std_name = sd.card()
+    flag = True 
+    sd = StudentDetails()
+    s_id , std_name = sd.card()
 
 
-if std_name.replace(" ", "").isalpha():
-    # number of subject condition 
-    n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
-    if n>0:
-        cal_obj= Calculations()
-        t_marks , avg = cal_obj.avg(n)
+    if std_name.replace(" ", "").isalpha():
+        # number of subject condition 
+        n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
+        if n>0:
+            cal_obj= Calculations()
+            t_marks , avg = cal_obj.avg(n)
 
-        # marks negavtive condition
-        if flag == True:
-            rnk= Rank()
-            gr = rnk.grade_func(avg)
+            # marks negavtive condition
+            if flag == True:
+                rnk= Rank()
+                gr = rnk.grade_function(avg)
 
-            res = Result(s_id,std_name,avg,gr,t_marks,n)
-            print(res)
+                res = Result(s_id,std_name,avg,gr,t_marks,n)
+                print(res)
 
+            else:
+                print("Marks can be entered only between 0-100")
         else:
-            print("Marks can be entered only between 0-100")
+            print("Subjects can't be less than Zero or can't be Negative ")
     else:
-        print("Subjects can't be less than Zero or can't be Negative ")
-else:
-    print("Name can't be contain any numbers")
+        print("Name can't be contain any numbers")
 
 
 # Note :

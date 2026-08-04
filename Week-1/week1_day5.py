@@ -1,6 +1,6 @@
-from week1_day1_grade_calc import get_int
 from abc import ABC  , abstractmethod
 from dataclasses import dataclass
+from week1_day1_grade_calc import get_int_input , grade_func
 
 @dataclass
 class StudentDetails():
@@ -10,13 +10,6 @@ class StudentDetails():
 
     def card(self):
         return self.s_id , self.std_name , self.n
-
-s_id = input("\nEnter the ID of the student : ")
-std_name = input("Enter the Name of the Student : ")    
-n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
-
-st = StudentDetails(s_id=s_id,std_name=std_name,n=n)
-s_id , std_name , n = st.card()
 
 class Student(ABC):
     def __init__(self, s_id , name ):
@@ -39,7 +32,7 @@ class MarksDetails(Student):
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-                marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
+                marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
                 if 0 <= marks <= 100:
                     grade_dict[subj] = marks
                     break
@@ -70,19 +63,7 @@ class Rank:
     def grade_func(self,avg):
         self.avg = avg
         grade =''
-        if avg >= 90 and avg <= 100:
-            grade = 'AA'
-        elif avg >= 80 and avg < 90:
-            grade = 'AB'
-        elif avg >= 70 and avg < 80:
-            grade = 'BB'
-        elif avg >= 60 and avg < 70:
-            grade = 'BC'
-        elif avg >=50 and avg < 60:
-            grade = 'CC'
-        else:
-            grade = 'D'
-        return grade
+        return grade_func(self.avg)
 
 class Result:
     def __init__(self,s_id,name,avg,grade,t_marks,n):
@@ -97,19 +78,27 @@ class Result:
     def res_func(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
-
-flag = True 
-
-if std_name.replace(" ", "").isalpha() and n>0: # isalpha() 
-   
-    cal_obj= Calculations()
-    t_marks , avg = cal_obj.avg(n)
+if __name__ == "__main__":
     
-    rnk= Rank()
-    gr = rnk.grade_func(avg)
+    flag = True 
+    
+    s_id = input("\nEnter the ID of the student : ")
+    std_name = input("Enter the Name of the Student : ")    
+    n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
 
-    res = Result(s_id,std_name,avg,gr,t_marks,n)
-    print(res.res_func())
+    if std_name.replace(" ", "").isalpha() and n>0: 
+ 
+        st = StudentDetails(s_id=s_id,std_name=std_name,n=n)
+        s_id , std_name , n = st.card()
+    
+        cal_obj= Calculations()
+        t_marks , avg = cal_obj.avg(n)
+        
+        rnk= Rank()
+        gr = rnk.grade_func(avg)
 
-else:
-    print("Name can't be contain any numbers or Subjects can't be less than Zero or can't be Negative")
+        res = Result(s_id,std_name,avg,gr,t_marks,n)
+        print(res.res_func())
+
+    else:
+        print("Name can't be contain any numbers or Subjects can't be less than Zero or can't be Negative")

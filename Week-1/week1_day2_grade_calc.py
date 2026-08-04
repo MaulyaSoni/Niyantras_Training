@@ -1,5 +1,6 @@
 from time import time
-from week1_day1_grade_calc import get_int_input
+from week1_day1_grade_calc import get_int_input , grade_func
+
 def func_time(func):
     def wrap_time(*args):
         t1 = time()
@@ -34,84 +35,69 @@ def end_part(func):
         return result
     return wrapper
 
+@data_collect
+def data(n):
+    grade_dict = {}
+    for _ in range(n):
+        subj = input("Enter subject: ")
+        while True:
+            marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
+            if 0 <= marks <= 100:
+                break
+            print("!!! Invalid input !!! , Please enter marks between 0-100")
+        grade_dict[subj] = marks
+    return grade_dict
+
+ # Total and Average using standard python concept
+@operations
+def avg(grade_dict):
+
+    total = sum(grade_dict.values())
+    average = total/n
+    print(f"\nAverage marks by py-methods : {average}")
+    return total , average
+
+@func_time
+# Total and Average using CLOSURE concept
+def cls_outer(grade_dict):
+    def cls_inner(marks_total):
+        aver = marks_total/n
+        return aver
+    return cls_inner
 
 
-print("\nWelcome to the Grade Calculator Application Tool (CLI MODE)")
+@end_part
+def details(*args, **kwargs):
+    print(f"\nDetails of student : {id_no} {name} \nTotal Score : ({Total}/{n*100}) \nAverage marks : {Avg} \nGrade : {gr}\n")
 
-# Details of Student 
-id_no = input("\nEnter your id :")
-name = input("Enter your name:")
+if __name__ == "__main__":
+    
+    print("\nWelcome to the Grade Calculator Application Tool (CLI MODE)")
+ 
+    id_no = input("\nEnter your id :")
+    name = input("Enter your name:")
 
-if not name.replace(" ", "").isalpha():
-    print("!! Invalid Output!! , Only Letters are allowed in the Name...")
-
-else:
-    n = get_int_input("\nEnter the number of subjects: ", "Please enter a whole number for the number of subjects.")
-
-    if(n == 0):
-        print("!!! Invalid input !!! , Please enter at least one Subject to calculate the average")
+    if not name.replace(" ", "").isalpha():
+        print("!! Invalid Output!! , Only Letters are allowed in the Name...")
 
     else:
-        grade_dict = {}
-        
-        # Function for Collcting marks
-        @data_collect
-        def data(n):
-            for _ in range(n):
-                subj = input("Enter subject: ")
-                while True:
-                    marks = get_int_input("Enter marks between (0-100): ", "Please enter a whole number for marks.")
-                    if 0 <= marks <= 100:
-                        break
-                    print("!!! Invalid input !!! , Please enter marks between 0-100")
-                grade_dict[subj] = marks
-            return grade_dict
-        grade_dict = data(n)
+        n = get_int_input("\nEnter the number of subjects: ", "Please enter a whole number for the number of subjects.")
+        if(n == 0):
+            print("!!! Invalid input !!! , Please enter at least one Subject to calculate the average")
 
-        # Total and Average using standard python concept
-        @operations
-        def avg(grade_dict):
-
-            total = sum(grade_dict.values())
-            average = total/n
-            print(f"\nAverage marks by py-methods : {average}")
-            return total , average
-        Total,Avg = avg(grade_dict)
-
-        @func_time
-        # Total and Average using CLOSURE concept
-        def cls_outer(grade_dict):
-            def cls_inner(marks_total):
-                aver = marks_total/n
-                return aver
-            return cls_inner
-        closure = cls_outer(grade_dict)    
-        print("\nAverage Marks by Closures :",closure(Total))
+        else: 
+            grade_dict = data(n)
         
-        @func_time
-        # Function for Calculating GRADE
-        def grade_func(avg):
-            if avg >= 90 and avg <= 100:
-                grade = 'AA'
-            elif avg >= 80 and avg < 90:
-                grade = 'AB'
-            elif avg >= 70 and avg < 80:
-                grade = 'BB'
-            elif avg >= 60 and avg < 70:
-                grade = 'BC'
-            elif avg >=50 and avg < 60:
-                grade = 'CC'
-            else:
-                grade = 'D'
-            return grade
-        gr = grade_func(Avg)
+            Total,Avg = avg(grade_dict)
+            
+            closure = cls_outer(grade_dict)    
+            print("\nAverage Marks by Closures :",closure(Total))  
+            
+            gr = grade_func(Avg)
 
-        # Rounding the average to 3 decimal points
-        Avg = round(Avg,3)
-        
-        # DETAILS func using the Arbitary arguments and Keyword arbitary arguments
-        @end_part
-        def details(*args, **kwargs):
-            print(f"\nDetails of student : {id_no} {name} \nTotal Score : ({Total}/{n*100}) \nAverage marks : {Avg} \nGrade : {gr}\n")
-        
-        details(Avg , Total ,gr, student_id = id_no, name = name)
+            # Rounding the average to 3 decimal points
+            Avg = round(Avg,3)
+            
+            # DETAILS func using the Arbitary arguments and Keyword arbitary arguments
+            
+            details(Avg , Total ,gr, student_id = id_no, name = name)
