@@ -2,7 +2,6 @@ from collections import Counter, defaultdict, namedtuple
 import csv
 import itertools
 
-# namedtuple , a function that generates custom class , here the EmployeeRecordClass 
 EmployeeRecordClass = namedtuple(
     "EmployeeRecordClass"
     , 
@@ -10,22 +9,40 @@ EmployeeRecordClass = namedtuple(
     ,
 )
 
-emp_list =list(csv.reader(open("tech_company_employee_data_1000.csv","r")))
-employee_data_list = [EmployeeRecordClass._make(row) for row in emp_list[1:]]
+with open("tech_company_employee_data_1000.csv", "r", newline="") as file:
+    emp_list = list(csv.reader(file))
+
+employee_data_list = []
+for row in emp_list[1:]:
+    if len(row) == 10:
+        employee_data_list.append(EmployeeRecordClass._make(row))
 print("Emp Data Row Wise Representation\n")
 print(employee_data_list[1:10])
 
 # Nested Comprehension for the experience employee with the condition of Remotly working 
-exp_emp_list = [emp.Name for emp in employee_data_list if emp.Remote_Work == "Yes" if int(emp.Experience_Years) > 5]
+exp_emp_list = []
+for emp in employee_data_list:
+    try:
+        if emp.Remote_Work == "Yes" and int(emp.Experience_Years) > 5:
+            exp_emp_list.append(emp.Name)
+    except ValueError:
+        continue
 print("\nExperienced and Remote employee List..........")
 print(exp_emp_list[:10])
 
-sorted_emp = sorted(employee_data_list , key=lambda emp_list: emp_list.Department)
+sorted_emp = sorted(employee_data_list , key=lambda employee: employee.Department)
 print("\nSorted employees list...........")
 print(sorted_emp[:5])
 
 # Grouping Departments 
-dept_groupby = itertools.groupby(sorted_emp, key=lambda emp: emp.Department)
+dept_groupby = {
+    department: list(group)
+    for department, group in itertools.groupby(sorted_emp, key=lambda employee: employee.Department)
+}
+
+print("\nEmployees grouped by department")
+for department, employees in dept_groupby.items():
+    print(f"{department}: {len(employees)} employees")
 
 city = [emp.City for emp in employee_data_list]
 city_counter = Counter(city)
@@ -38,6 +55,6 @@ performance = defaultdict(list)
 for emp in employee_data_list:
     performance[emp.Performance_Score].append(emp.Name)
 
-# print("Number of Employees by Performance Score")
-# for score, names in performance.items():
-#     print(f"Performance_score {score}: {len(names)} employees")
+print("\nNumber of Employees by Performance Score")
+for score, names in performance.items():
+    print(f"Performance_score {score}: {len(names)} employees")
