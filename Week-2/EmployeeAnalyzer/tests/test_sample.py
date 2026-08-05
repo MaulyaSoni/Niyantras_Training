@@ -1,8 +1,8 @@
 import sys
 import pytest
-from reader import validate_row
+from reader import AgeException, validate_row
 
-@python.fixtures
+@pytest.fixture
 def sample_emp():
     return[
         [
@@ -19,18 +19,15 @@ def sample_emp():
         ]
     ]
 
-def validate_age(age):
-    if age <= 0:
-        raise ValueError("Invalid Age")
-    return True
-
 @pytest.fixture
 def valid_age():
     return 25
 
-def test_valid_age(valid_age):
-    assert validate_age(valid_age)
+def test_valid_age(sample_emp):
+    assert validate_row(sample_emp[0]) is None
 
-def test_invalid_age():
-    with pytest.raises(ValueError):
-        validate_age(-25)
+def test_invalid_age(sample_emp):
+    sample_emp[0][2] = "-25"
+
+    with pytest.raises(AgeException):
+        validate_row(sample_emp[0])

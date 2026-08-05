@@ -23,7 +23,8 @@ print(employee_data_list[1:10])
 exp_emp_list = []
 for emp in employee_data_list:
     try:
-        if emp.Remote_Work == "Yes" and int(emp.Experience_Years) > 5:
+        experience_years = int(emp.Experience_Years)
+        if emp.Remote_Work == "Yes" and experience_years > 5:
             exp_emp_list.append(emp.Name)
     except ValueError:
         continue

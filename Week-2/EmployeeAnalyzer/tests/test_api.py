@@ -1,5 +1,4 @@
 import requests
-import json
 import unittest
 from unittest.mock import patch, Mock
 
@@ -13,7 +12,7 @@ def load_data(emp_name):
 
 # Class
 class TestGetData(unittest.TestCase):
-    @patch('main.get_data')
+    @patch('requests.get')
     def test_get_data(self, mock_get_data):
         mock_data =  {'count': 200018, 'name': 'Raj', 'country': [{'country_id': 'IN', 'probability': 0.41083}, {'country_id': 'SA', 'probability': 0.081486}, {'country_id': 'QA', 'probability': 0.051763}, {'country_id': 'US', 'probability': 0.044113}, {'country_id': 'GB', 'probability': 0.040897}]}
         mock_get_data.return_value = Mock()
@@ -21,15 +20,9 @@ class TestGetData(unittest.TestCase):
         mock_get_data.return_value.json.return_value = mock_data
         mock_get_data.return_value.status_code = 200
 
-        result = load_data()
+        result = load_data("Raj")
 
         self.assertEqual(result, mock_data)
 
-
-def main():
-    print(load_data("Raj"))
-
-
 if __name__ == '__main__':
-    main()
     unittest.main(argv=['first-arg-is-ignored'], exit=False)
