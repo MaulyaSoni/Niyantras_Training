@@ -35,7 +35,6 @@ class MarksDetails(Student):
 
     def data(self,n):
         self.n = n 
-        global flag
         grade_dict={}
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
@@ -99,6 +98,7 @@ class Result:
 
 if __name__ == "__main__":
 
+<<<<<<< HEAD
 <<<<<<< HEAD:week1_day4.py
 # name condition 
 if std_name.replace(" ", "").isalpha():
@@ -114,6 +114,8 @@ if std_name.replace(" ", "").isalpha():
             gr = rnk.grade_func(avg)
 =======
     flag = True 
+=======
+>>>>>>> main
     sd = StudentDetails()
     s_id , std_name = sd.card()
 
@@ -126,16 +128,11 @@ if std_name.replace(" ", "").isalpha():
             cal_obj= Calculations()
             t_marks , avg = cal_obj.avg(n)
 
-            # marks negavtive condition
-            if flag == True:
-                rnk= Rank()
-                gr = rnk.grade_function(avg)
+            rnk= Rank()
+            gr = rnk.grade_function(avg)
 
-                res = Result(s_id,std_name,avg,gr,t_marks,n)
-                print(res)
-
-            else:
-                print("Marks can be entered only between 0-100")
+            res = Result(s_id,std_name,avg,gr,t_marks,n)
+            print(res)
         else:
             print("Subjects can't be less than Zero or can't be Negative ")
     else:

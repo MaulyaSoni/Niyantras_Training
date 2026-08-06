@@ -50,15 +50,15 @@ def predict_nationality(emp_name):
         }
     
     except requests.exceptions.Timeout:
-        return ("Unable to fetch (Request Timed Out).","System")
+        return {"error": "Unable to fetch (Request Timed Out)."}
 
     except requests.exceptions.ConnectionError:
-        return ("No Internet Connection.","System")
+        return {"error": "No Internet Connection."}
 
     except requests.exceptions.HTTPError:
-        return ("Service returned an error.","System")
+        return {"error": "Service returned an error."}
 
     except Exception:
-        return ("Nationality Prediction Service unavailable.","System")
+        return {"error": "Nationality Prediction Service unavailable."}
     
 

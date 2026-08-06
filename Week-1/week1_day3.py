@@ -43,7 +43,6 @@ class Details:
         
     @operations
     def data(self,n):
-        global flag
         self.n = n 
         grade_dict={}
         for _ in range(n):
@@ -82,8 +81,6 @@ if __name__ == "__main__":
     
     print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
     
-    flag = True
-    
     S_id = input("\nEnter the ID of the student : ")
     std_name = input("Enter the Name of the Student : ")
 
@@ -92,22 +89,17 @@ if __name__ == "__main__":
         if n>0:
             subj_obj= Subject(n)
 
-            if flag == True:
-                
-                det = Details()
-                detail_dict = det.data(n)
+            det = Details()
+            detail_dict = det.data(n)
 
-                calc = Calculations()
-                total , average_func = calc.avg(n,grades = detail_dict)
+            calc = Calculations()
+            total , average_func = calc.avg(n,grades = detail_dict)
 
-                rnk = Rank()
-                grade = rnk.grade_function(average_func)
+            rnk = Rank()
+            grade = rnk.grade_function(average_func)
 
-                stu = Student(S_id , std_name ,total ,average_func , grade,n)
-                print(stu.res())
-
-            else:
-                print("Marks can be entered only between 0-100")
+            stu = Student(S_id , std_name ,total ,average_func , grade,n)
+            print(stu.res())
         else:
             print("Subjects can't be less than Zero or Negative ")
     else:
