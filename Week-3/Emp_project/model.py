@@ -11,4 +11,5 @@ class Employee(Base):
     name : Mapped[str] = mapped_column(String(20) , nullable = False)
     age : Mapped[int] = mapped_column(Integer , nullable = False)
 
+# if not tagretted database not exist , then it generates the all defined databases
 Base.metadata.create_all(engine)

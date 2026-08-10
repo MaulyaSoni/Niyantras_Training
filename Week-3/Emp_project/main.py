@@ -33,7 +33,7 @@ app = FastAPI()
 
 
 @app.post("/employee")
-async def create_emp_func(emp : EmployeeResponse , db : Session = Depends(get_db)):
+async def create_emp_func(emp : EmployeeSchema , db : Session = Depends(get_db)):
     return create_emp_data(db ,emp)
 
 @app.get("/employee/all")
