@@ -8,15 +8,14 @@ def validate_age(age : Any) -> Any:
     else :
         return age
 
-def validate_name(emp_name : str):
-    if emp_name.replace(" ", "").isalpha():
-        return emp_name
+def validate_name(name : str):
+    if name.replace(" ", "").isalpha():
+        return name
     else:
-        return emp_name
+        return name
  
-class Employee(BaseModel):
-    emp_id: str
-    emp_name : Annotated[str , BeforeValidator(validate_name)]
+class EmployeeModel(BaseModel):
+    e_id: str
+    name : Annotated[str , BeforeValidator(validate_name)]
     age: Annotated[int , BeforeValidator(validate_age)]
-    Designation: str | None = None
-    address : str | None = None
+  
