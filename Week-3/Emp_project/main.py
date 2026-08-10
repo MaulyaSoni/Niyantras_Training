@@ -1,11 +1,11 @@
 from fastapi import FastAPI , Depends
 from sqlalchemy.orm import Session
 from class_model import EmployeeModel
-from model import Employee
+from database import engine
+from models import Employee , Base
 from schema import EmployeeResponse , EmployeeSchema
 from operations import create_emp_data , fetch_details , delete_emp ,update_details , get_details_all
-from database_model import get_db
-# from fastapi.encoders import jsonable_encoder
+from database import get_db
 
 app = FastAPI()
 
@@ -31,6 +31,10 @@ app = FastAPI()
 # async def delete_emp_func(emp_id : str):
 #     return delete_emp(emp_id)
 
+@app.on_event("startup")
+def create_tables():
+    # if not tagretted database not exist , then it generates the all defined databases
+    Base.metadata.create_all(engine)    
 
 @app.post("/employee")
 async def create_emp_func(emp : EmployeeSchema , db : Session = Depends(get_db)):
