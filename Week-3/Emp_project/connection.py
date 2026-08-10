@@ -6,7 +6,7 @@ import psycopg2
 print(psycopg2.__version__)
 print(sqlalchemy.__version__)
 
-engine = create_engine('postgresql+psycopg2://username:password\@127.0.0.1:5432/testdb')
+# engine = create_engine('postgresql+psycopg2://username:password\@127.0.0.1:5432/testdb')
 
 connection = engine.connect()
 print("Connection successfully done")

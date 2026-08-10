@@ -14,7 +14,7 @@ def validate_name(name : str):
     else:
         return name
  
-class Employee(BaseModel):
+class EmployeeModel(BaseModel):
     e_id: str
     name : Annotated[str , BeforeValidator(validate_name)]
     age: Annotated[int , BeforeValidator(validate_age)]
