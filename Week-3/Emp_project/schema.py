@@ -1,11 +1,5 @@
 from pydantic import BaseModel ,Field , ConfigDict 
 
-class EmployeeSalary(BaseModel):
-    e_id : str
-    present_days : int = Field(gt = 0)
-    salary : int = Field(gt = 0 , nullable = False)
-
-
 class DepartmentSchema(BaseModel):
     dept_id : str = Field(min_length = 3)
     dept_name : str = Field(min_length = 1)

@@ -24,10 +24,3 @@ class Employee(Base):
     dept_id : Mapped[str] = mapped_column(ForeignKey("Department_table.dept_id"), nullable= False)
    
     department_object =relationship ("Department" , back_populates = "employee_object")
-
-class EmployeeSalary(Base):
-    __tablename__ = "Salary_table"
-
-    e_id : Mapped[str] = mapped_column(String(20) , primary_key= True)
-    salary : Mapped[int] = mapped_column(Integer , nullable=False)
-    present_days : Mapped[int] = mapped_column(Integer , nullable=False)
