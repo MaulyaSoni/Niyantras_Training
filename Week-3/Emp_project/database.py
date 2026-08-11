@@ -1,7 +1,13 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-DB_URL = "sqlite:///employee_database.db"
-engine = create_engine(DB_URL)
+from dotenv import load_dotenv
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+print(DATABASE_URL)
+
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(bind = engine , autocommit = False)
 

@@ -1,5 +1,5 @@
 from fastapi import HTTPException 
-from model import Employee
+from models import Employee
 from class_model import EmployeeModel
 from schema import EmployeeSchema , EmployeeResponse
 from sqlalchemy.orm import Session
@@ -74,4 +74,6 @@ def delete_emp(db : Session , emp_id : str ):
     #         emp_list.remove(e)
 
     db.delete(employee)
+    db.commit()
+    
     return {f"Employee {emp_id} deleted successfully"}
