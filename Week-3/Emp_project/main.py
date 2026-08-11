@@ -2,9 +2,10 @@ from fastapi import FastAPI , Depends
 from sqlalchemy.orm import Session
 from class_model import EmployeeModel
 from database import engine
-from models import Employee , Base
-from schema import EmployeeResponse , EmployeeSchema
+from models import Employee , Base , Department
+from schema import EmployeeResponse , EmployeeSchema , DepartmentSchema , DepartmentResponse
 from operations import create_emp_data , fetch_details , delete_emp ,update_details , get_details_all
+from operations import fetch_dept , create_dept_details 
 from database import get_db
 
 app = FastAPI()
@@ -37,21 +38,32 @@ def create_tables():
     Base.metadata.create_all(engine)    
 
 @app.post("/employee")
-async def create_emp_func(emp : EmployeeSchema , db : Session = Depends(get_db)):
+def create_emp_func(emp : EmployeeSchema , db : Session = Depends(get_db)):
     return create_emp_data(db ,emp)
+
+@app.post("/department")
+def create_dept_func(dept : DepartmentSchema ,  db : Session = Depends(get_db)): 
+    return create_dept_details(db , dept)
+
 
 @app.get("/employee/all")
 def get_all(emp:EmployeeResponse , db : Session = Depends(get_db)):
     return get_details_all(db)
-    
+
+@app.get("/department/all")
+def get_all_dept(dept:DepartmentResponse , db : Session = Depends(get_db)):
+    return fetch_dept(db)
+
 @app.get("/employee/{emp_id}")
-async def get_emp_func(emp_id : str , db : Session = Depends(get_db)):
+def get_emp_func(emp_id : str , db : Session = Depends(get_db)):
     return fetch_details(db , emp_id)
 
+
+
 @app.put("/employee/update/{emp_id}")
-async def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(get_db)):
+def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(get_db)):
     return update_details(db ,emp_id, emp)
 
 @app.delete("/employee/delete/{emp_id}")
-async def delete_emp_func( emp_id : str,db : Session = Depends(get_db) ):
+def delete_emp_func( emp_id : str,db : Session = Depends(get_db) ):
     return delete_emp(db , emp_id)

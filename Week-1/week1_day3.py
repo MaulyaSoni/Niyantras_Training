@@ -67,8 +67,6 @@ class Calculations:
         average= round(average,3)
         return total , average
 
-
-
 class Rank:
     def __init__(self):
         pass
