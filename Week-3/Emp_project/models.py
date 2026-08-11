@@ -21,7 +21,7 @@ class Employee(Base):
     age : Mapped[int] = mapped_column(Integer , nullable = False)
 
     #foreign key 
-    department_id : Mapped[str] = mapped_column(ForeignKey("Department_table.dept_id"), nullable= False)
+    dept_id : Mapped[str] = mapped_column(ForeignKey("Department_table.dept_id"), nullable= False)
    
     department_object =relationship ("Department" , back_populates = "employee_object")
 
@@ -31,6 +31,3 @@ class EmployeeSalary(Base):
     e_id : Mapped[str] = mapped_column(String(20) , primary_key= True)
     salary : Mapped[int] = mapped_column(Integer , nullable=False)
     present_days : Mapped[int] = mapped_column(Integer , nullable=False)
-    
-
-
