@@ -13,7 +13,7 @@ class DepartmentResponse(BaseModel):
 
 
 class EmployeeSchema(BaseModel):
-    e_id : str = Field(min_length = 3)
+    e_id : str = Field(min_length = 4)
     name : str = Field(max_length = 25)
     age : int = Field(gt = 0) #greater than 0
     dept_id : str = Field(nullable = False)

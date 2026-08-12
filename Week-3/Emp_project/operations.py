@@ -1,8 +1,9 @@
-from fastapi import HTTPException 
+from fastapi import HTTPException , Depends
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordBearer
 from models import Employee ,Department
 from schema import EmployeeSchema , EmployeeResponse , DepartmentSchema , DepartmentResponse
-
+from typing import Annotated
 
 def create_dept_data(db : Session , dept : DepartmentSchema):
 
@@ -27,6 +28,12 @@ def create_emp_data(db : Session , emp : EmployeeSchema):
     
     if existing_emp :
         raise HTTPException(status_code = 400 ,detail = "!! Employee already exist...")  
+    
+    data = emp.e_id
+    res = data[0:3]
+    
+    if res != "emp":
+        raise HTTPException(status_code = 406 , detail="!! Id should be contain the prefix of 'emp'")
     
     employee = Employee(e_id = emp.e_id , name = emp.name  , age = emp.age , dept_id = emp.dept_id)
     db.add(employee)
@@ -77,6 +84,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema):
 
     return {"Employee details update successfully "}
 
+
 def delete_emp(db : Session , emp_id : str ):
 
     employee = db.get(Employee , emp_id)
@@ -87,3 +95,9 @@ def delete_emp(db : Session , emp_id : str ):
     db.commit()
 
     return {f"Employee {emp_id} deleted successfully"}
+
+# def delete_all_func(db : Session):
+    
+#     db.delete(Employee).all()
+#     db.commit()
+#     return{"..Deleted all Employee details successfully.."} 

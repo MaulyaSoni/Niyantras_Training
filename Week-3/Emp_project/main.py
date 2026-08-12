@@ -1,4 +1,5 @@
 from fastapi import FastAPI , Depends
+from typing import Annotated
 from sqlalchemy.orm import Session
 from database import get_db , engine
 from models import Base , Employee , Department
@@ -6,6 +7,8 @@ from schema import EmployeeResponse , EmployeeSchema , DepartmentSchema , Depart
 from operations import create_dept_data , create_emp_data
 from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise
 from operations import delete_emp , update_emp , get_all_emp
+from dependencies import verify_admin , verify_emp_id
+from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI()
 
@@ -20,10 +23,12 @@ def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db)):
     return create_emp_data(db ,emp)
 
 @app.post("/department")
-def create_dept(dept : DepartmentSchema ,  db : Session = Depends(get_db)): 
+def create_dept(dept : DepartmentSchema ,  db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)): 
     return create_dept_data(db , dept)
 
 
+# @app.get("/admin")
+# def verify_admin_func()
 
 @app.get("/employee/all")
 def get_all_emp_details(emp:EmployeeResponse , db : Session = Depends(get_db)):
@@ -52,5 +57,9 @@ def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(
 
 
 @app.delete("/employee/delete/{emp_id}")
-def delete_emp_func( emp_id : str,db : Session = Depends(get_db) ):
+def delete_emp_func( emp_id : str,db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id)
+
+# @app.delete("/employee/delete/all")
+# def delete_all_func(db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
+#     return delete_all(db)
