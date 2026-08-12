@@ -95,9 +95,3 @@ def delete_emp(db : Session , emp_id : str ):
     db.commit()
 
     return {f"Employee {emp_id} deleted successfully"}
-
-# def delete_all_func(db : Session):
-    
-#     db.delete(Employee).all()
-#     db.commit()
-#     return{"..Deleted all Employee details successfully.."} 
