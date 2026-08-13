@@ -23,3 +23,4 @@ def verify_emp_id(current_emp_id:str=Depends(emp_id_check)):
         raise HTTPException(status_code = 406 , detail="Not Acceptable , id should be contain the prefix of 'emp'")
     
     return res 
+

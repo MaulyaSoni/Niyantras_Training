@@ -24,3 +24,12 @@ class Employee(Base):
     dept_id : Mapped[str] = mapped_column(ForeignKey("Department_table.dept_id"), nullable= False)
    
     department_object =relationship ("Department" , back_populates = "employee_object")
+
+class Users(Base):
+    __tablename__ = "User_table"
+    
+    userid : Mapped[str] = mapped_column(String(20) , primary_key = True)
+    username : Mapped[str] = mapped_column(String(20) , nullable = False)
+    hashed_password : Mapped[str] = mapped_column(String(100) , nullable = False)
+    user_role : Mapped[str] = mapped_column(String(20), nullable = False)
+    

@@ -27,3 +27,25 @@ class EmployeeResponse(BaseModel):
 
     # for fetching data , setting the rule to read from the database with the help of ConfigDict
     model_config = ConfigDict(from_attributes = True)
+
+class UsersSchema(BaseModel):
+    # userid : str = Field(nullable = False)
+    username : str = Field(min_length = 2)
+    password : str = Field(nullable = False)
+    # role : str = Field(max_length = 15)
+
+class UsersResponse(BaseModel):
+    userid : str
+    username : str
+    # hashed_password : str
+    role : str
+
+    model_config = ConfigDict(from_attributes = True)
+
+class UserIn(BaseModel):
+    hashed_password : str
+
+
+class Token(BaseModel):
+    access_token : str
+    token_type : str

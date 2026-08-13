@@ -3,12 +3,19 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from database import get_db , engine
 from models import Base , Employee , Department
-from schema import EmployeeResponse , EmployeeSchema , DepartmentSchema , DepartmentResponse
+from schema import EmployeeResponse , EmployeeSchema 
+from schema import DepartmentSchema , DepartmentResponse
+from schema import UsersSchema , UsersResponse
 from operations import create_dept_data , create_emp_data
 from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise
 from operations import delete_emp , update_emp , get_all_emp
-from dependencies import verify_admin , verify_emp_id
 from fastapi.security import OAuth2PasswordBearer
+from dependencies import verify_admin , verify_emp_id
+from pwdlib import PasswordHash
+from hash_operations import get_current_active_user
+
+ 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
 
@@ -16,7 +23,6 @@ app = FastAPI()
 def create_tables():
     # if not tagretted database not exist , then it generates the all defined databases
     Base.metadata.create_all(engine)    
-
 
 @app.post("/employee")
 def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db)):
@@ -57,3 +63,9 @@ def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(
 @app.delete("/employee/delete/{emp_id}")
 def delete_emp_func( emp_id : str,db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id)
+
+
+
+@app.get("/users/me/")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]) -> User:
+    return current_user
