@@ -1,16 +1,16 @@
+import os
 from fastapi import FastAPI
 from schema import Token , UsersResponse , UsersSchema , UserIn
 import bcrypt 
 import jwt
 
+load_dotenv()
+DUMMY_HASH = os.getenv("DUMMY_HASH")
+ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+ALGORITHM = os.getenv("ALGORITHM")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-SECRET_KEY = "My_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
-password_hash = PasswordHash.recommend()
-DUMMY_HASH =password_hash.hash("dummypassword")
-
+# password_hash = PasswordHash.recommend()
 # oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 fake_users_db ={
@@ -43,16 +43,15 @@ def authenticate_user(temp_db , username : str , password : str):
         return False
     return user
 
+def generate_hash_password(password):   
+    password_bytes = password.encode("utf-8")
+    hashed_password = bcrypt.hashpw(password_bytes , bcrypt.gensalt())
+    decoded_hash_password = hashed_password.decode("utf-8")
+    return decoded_hash_password
 
-def generate_hash_password(password:str)->str:
-    password_byte = password.encode("utf-8")
-    hashed = bcrypt.hashpw(password_byte  , bcrypt.gensalt())
-
-
-def check_hash_password():
-    pass
-
-
+def verify_hash_password(hashed_password : str , plain_password : str):
+    return bcrypt.checkpw(hashed_password.decode("utf-8") , plain_password.decode("utf-8"))
+    
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
