@@ -5,8 +5,9 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from models import Employee ,Department
-from schema import EmployeeSchema , EmployeeResponse , DepartmentSchema , DepartmentResponse
-
+from schema import EmployeeSchema , EmployeeResponse , DepartmentSchema , DepartmentResponse , UsersSchema , UsersResponse
+from models import Users 
+from hash_methods import generate_hash_password
 logging.basicConfig(
     filename="Emp_project.log",
     level=logging.ERROR,
@@ -97,6 +98,22 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
     db.commit()
 
     return {"Department details inserted successfully..."}
+
+def create_user(db: Session,user_data: UserCreate):
+
+    existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
+
+    if existing_user:
+        raise HTTPException(status_code=409,detail="Username already exists")
+
+    new_user = User(userid="user001",username=user_data.username,
+        generate_hashed_password=hash_password(user_data.password),user_role="user")
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
 
 def get_all_emp(db:Session):
     # logging.info("Fetching all employee details")

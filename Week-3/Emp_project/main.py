@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pwdlib import PasswordHash
 from database import get_db , engine
-from models import Base , Employee , Department
+from models import Base , Employee , Department, Users
 from schema import EmployeeResponse , EmployeeSchema 
 from schema import DepartmentSchema , DepartmentResponse
 from schema import UsersSchema , UsersResponse
@@ -15,7 +15,7 @@ from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise
 from operations import delete_emp , update_emp , get_all_emp , get_emp_dept_name
 from operations import DataCannotInsertException , datacannotinsert_exception_handler
 from operations import InvalidEmpIDException , invalid_id_exception_handler
-from dependencies import verify_admin , verify_emp_id
+from dependencies import get_current_user, verify_admin , verify_emp_id
 
 
 class DataCannotInsertException(Exception):
@@ -80,3 +80,23 @@ def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(
 @app.delete("/employee/delete/{emp_id}")
 def delete_emp_func( emp_id : str,db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id)
+
+
+@app.post("/register",response_model=UserResponse,status_code=201)
+def register(user_data: UserCreate,db: Session = Depends(get_db)):
+    return create_user(db,user_data)
+
+@app.post("/token")
+def login(form_data: OAuth2PasswordRequestForm = Depends(),db: Session = Depends(get_db)):
+    user = authenticate_user(db,form_data.username,form_data.password)
+
+    if user is None:
+        raise HTTPException(status_code=401,detail="Incorrect username or password")
+
+    token = create_access_token(user.username)
+
+    return {"access_token": token,"token_type": "bearer"}
+
+@app.get("/users/me")
+def get_my_profile(current_user: Users = Depends(get_current_user)):
+    return current_user

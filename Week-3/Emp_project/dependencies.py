@@ -1,4 +1,7 @@
 from fastapi import Depends , HTTPException
+from fastapi.security import OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def get_current_user():
     return{
@@ -24,3 +27,8 @@ def verify_emp_id(current_emp_id:str=Depends(emp_id_check)):
     
     return res 
 
+def verify_admin(current_user: Users = Depends(get_current_user)):
+    if current_user.user_role != "Admin":
+        raise HTTPException(status_code=403,detail="Admin access required")
+
+    return current_user
