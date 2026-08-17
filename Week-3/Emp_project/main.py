@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException , Request ,Depends
+from fastapi import FastAPI, HTTPException , Request ,Depends , BackgroundTasks
 from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm , OAuth2PasswordBearer
@@ -14,7 +14,7 @@ from operations import create_dept_data , create_emp_data , create_user
 from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise , fetch_all_user
 from operations import delete_emp , update_emp , get_all_emp , get_emp_dept_name
 from operations import DataCannotInsertException , datacannotinsert_exception_handler
-from operations import InvalidEmpIDException , invalid_id_exception_handler
+from operations import InvalidEmpIDException , invalid_id_exception_handler , update_notification
 from dependencies import get_current_user, verify_admin , verify_emp_id
 from security_functions import authenticate_user , create_access_token
 # from operations import create_admin
@@ -40,7 +40,7 @@ def create_tables():
 #--------------create--------------------------------------------------------------------
 
 @app.post("/employee")
-def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db)):
+def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
     return create_emp_data(db , emp)
 
 @app.post("/department")
@@ -92,19 +92,26 @@ def get_emp_dept(emp_id : str , db : Session = Depends(get_db)):
 #---------------------------------------------------------------
 @app.get("/users/me")
 def get_my_profile(current_user: Users = Depends(get_current_user)):
-    return current_user
+    return current_user()
 
 @app.get("/users/all")
 def get_all_users(users = UsersResponse , db: Session = Depends(get_db) , current_user :dict = Depends(verify_admin)):
     return fetch_all_user(db)
 
 #-------------update--------------------------------------------------------
-
 @app.put("/employee/update/{emp_id}")
-def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(get_db)):
-    return update_emp(db ,emp_id, emp)
+def update_emp_func(
+    emp_id : str, 
+    emp : EmployeeSchema, 
+    background_tasks : BackgroundTasks, 
+    db : Session = Depends(get_db),
+    current_user : dict = Depends(verify_admin)):
+    return update_emp(db ,emp_id, emp , background_tasks)
 
 #-------------delete-----------------------------------------------------
 @app.delete("/employee/delete/{emp_id}")
-def delete_emp_func( emp_id : str,db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
+def delete_emp_func(
+    emp_id : str,
+    db : Session = Depends(get_db),
+    current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id)

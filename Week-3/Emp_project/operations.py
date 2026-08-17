@@ -1,6 +1,6 @@
 import logging
 from typing import Annotated
-from fastapi import HTTPException , Depends ,Request
+from fastapi import HTTPException , Depends ,Request , BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
@@ -11,7 +11,7 @@ from schema import UsersSchema , UsersResponse
 from hash_methods import generate_hash_password
 
 logging.basicConfig(
-    filename="./logs/Emp_project.log",
+    filename="Log_employee_project.log",
     level=logging.ERROR,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -48,6 +48,11 @@ async def different_id_exception_handler(request : Request , exc : DifferentIDEx
         status_code = 409,
         content = {"message" : f"You can't altered the employee ID"}
     ) 
+
+#---------------------logger----------------------------------
+
+def update_notification(emp_id:str):
+    return(f"{emp_id}Employee was updated")
 
 #---------------------------Create----------------------------------
 def create_emp_data(db : Session , emp : EmployeeSchema):
@@ -173,7 +178,7 @@ def fetch_all_user(db:Session):
     return db.query(Users).all()
 
 #----------------Update----------------------
-def update_emp(db : Session , emp_id : str , emp : EmployeeSchema):
+def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_tasks : BackgroundTasks):
     employee =  db.get(Employee , emp_id)
     
     if employee is None :
@@ -192,7 +197,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema):
     employee.age = emp.age
     db.commit()
     db.refresh(employee)
-
+    background_tasks.add_task(update_notification , emp_id)
     return {"Employee details update successfully "}
 
 #-----------------------Delete---------------
