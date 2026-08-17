@@ -1,1 +1,8 @@
 .env
+.venv/
+__pycache__/
+logs/
+employee_detail_database.db
+get-pip.py
+.python-version
+alembic.ini

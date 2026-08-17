@@ -42,10 +42,10 @@ class UsersResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes = True)
 
-class UserIn(BaseModel):
-    hashed_password : str
+# class UserIn(BaseModel):
+#     hashed_password : str
 
 
-class Token(BaseModel):
-    access_token : str
-    token_type : str
+# class Token(BaseModel):
+#     access_token : str
+#     token_type : str

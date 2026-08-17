@@ -11,7 +11,7 @@ from schema import UsersSchema , UsersResponse
 from hash_methods import generate_hash_password
 
 logging.basicConfig(
-    filename="Emp_project.log",
+    filename="./logs/Emp_project.log",
     level=logging.ERROR,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
