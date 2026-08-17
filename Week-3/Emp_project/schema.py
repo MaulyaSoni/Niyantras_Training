@@ -35,7 +35,7 @@ class UsersSchema(BaseModel):
     # role : str = Field(max_length = 15)
 
 class UsersResponse(BaseModel):
-    userid : str
+    userid : int
     username : str
     # hashed_password : str
     role : str

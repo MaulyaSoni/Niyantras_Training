@@ -7,7 +7,9 @@ from sqlalchemy.orm import Session
 from models import Employee ,Department
 from schema import EmployeeSchema , EmployeeResponse , DepartmentSchema , DepartmentResponse , UsersSchema , UsersResponse
 from models import Users 
+from schema import UsersSchema , UsersResponse
 from hash_methods import generate_hash_password
+
 logging.basicConfig(
     filename="Emp_project.log",
     level=logging.ERROR,
@@ -47,7 +49,7 @@ async def different_id_exception_handler(request : Request , exc : DifferentIDEx
         content = {"message" : f"You can't altered the employee ID"}
     ) 
 
-# methods 
+#---------------------------Create----------------------------------
 def create_emp_data(db : Session , emp : EmployeeSchema):
 
     existing_emp = db.get(Employee ,emp.e_id)
@@ -99,15 +101,18 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
 
     return {"Department details inserted successfully..."}
 
-def create_user(db: Session,user_data: UserCreate):
+def create_user(db: Session,user_data: UsersSchema):
 
     existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
 
     if existing_user:
         raise HTTPException(status_code=409,detail="Username already exists")
 
-    new_user = User(userid="user001",username=user_data.username,
-        generate_hashed_password=hash_password(user_data.password),user_role="user")
+    # new_user = Users(userid="user001",username=user_data.username,
+    #     hashed_password=generate_hash_password(user_data.password),user_role="user")
+
+    new_user = Users(userid = "user002", username=user_data.username,
+        hashed_password=generate_hash_password(user_data.password),user_role="user")
 
     db.add(new_user)
     db.commit()
@@ -115,6 +120,18 @@ def create_user(db: Session,user_data: UserCreate):
 
     return new_user
 
+# def create_admin(db:Session , user_data : UsersSchema):
+#     new_user = Users(userid = "admin001", username=user_data.username,
+#         hashed_password=generate_hash_password(user_data.password),user_role="Admin")
+
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+
+#     return new_user
+
+    
+#-----------------------------read-----------------------------
 def get_all_emp(db:Session):
     # logging.info("Fetching all employee details")
     return db.query(Employee).all()
@@ -152,9 +169,11 @@ def get_emp_dept_name(db:Session , emp_id : str):
     department = db.get(Department , dept_id)
     return department
 
+def fetch_all_user(db:Session):
+    return db.query(Users).all()
 
+#----------------Update----------------------
 def update_emp(db : Session , emp_id : str , emp : EmployeeSchema):
-
     employee =  db.get(Employee , emp_id)
     
     if employee is None :
@@ -176,7 +195,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema):
 
     return {"Employee details update successfully "}
 
-
+#-----------------------Delete---------------
 def delete_emp(db : Session , emp_id : str ):
 
     employee = db.get(Employee , emp_id)
@@ -188,6 +207,3 @@ def delete_emp(db : Session , emp_id : str ):
     db.commit()
 
     return {f"Employee {emp_id} deleted successfully"}
-
-
-

@@ -1,13 +1,14 @@
 from fastapi import Depends , HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from security_functions import get_current_user 
+from models import Users
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-def get_current_user():
-    return{
-        "username" : "MS",
-        "role":"Admin"
-    }
+# Dummy 
+# def get_current_user():
+#     return{
+#         "username" : "MS",
+#         "role":"Admin"
+#     }
 
 def verify_admin(current_user : dict = Depends(get_current_user)):
     if current_user["role"] != "Admin":
@@ -19,6 +20,7 @@ def verify_admin(current_user : dict = Depends(get_current_user)):
 def emp_id_check(emp_id):
     data = emp_id
     res = data[0:3]
+
     return res
 
 def verify_emp_id(current_emp_id:str=Depends(emp_id_check)):
