@@ -6,6 +6,8 @@ from models import Users
 from hash_methods import verify_hash_password
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime , timedelta , timezone
+
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 SECRET_KEY = "my-secret-key"
@@ -21,7 +23,7 @@ def get_username_from_token(token:str):
         return username
     
     except :
-        raise HTTPException(status_code = 401 , detail = "Invalid Token from get username from token ")
+        raise HTTPException(status_code = 401 , detail = "Invalid Token or you have not register with token")
 
 def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(get_db)):
     username = get_username_from_token(token)

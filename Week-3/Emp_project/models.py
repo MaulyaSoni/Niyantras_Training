@@ -29,7 +29,7 @@ class Users(Base):
     __tablename__ = "User_table"
     
     #autoincrement for new user coming 
-    userid : Mapped[int] = mapped_column(primary_key = True , autoincrement = True)
+    userid : Mapped[int] = mapped_column(Integer , primary_key = True)
     username : Mapped[str] = mapped_column(String(20) , nullable = False)
     hashed_password : Mapped[str] = mapped_column(String(100) , nullable = False)
     user_role : Mapped[str] = mapped_column(String(20), nullable = False)

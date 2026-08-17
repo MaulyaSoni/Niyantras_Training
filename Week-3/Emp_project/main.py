@@ -30,14 +30,14 @@ app = FastAPI()
 app.add_exception_handler(DataCannotInsertException , datacannotinsert_exception_handler)
 app.add_exception_handler(InvalidEmpIDException , invalid_id_exception_handler)
 
-#---------------events----------------
+#---------------events-------------------------------------------------------------------
 
 @app.on_event("startup")
 def create_tables():
     # if not tagretted database not exist , then it generates the all defined databases
     Base.metadata.create_all(engine)   
 
-#--------------create----------------
+#--------------create--------------------------------------------------------------------
 
 @app.post("/employee")
 def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db)):
@@ -47,7 +47,7 @@ def create_emp(emp : EmployeeSchema , db : Session = Depends(get_db)):
 def create_dept(dept : DepartmentSchema ,  db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)): 
     return create_dept_data(db , dept)
 
-#-----------------------------------------done----------------
+#-----------------------------------------User perspective --------------------------------------
 @app.post("/register")
 def register(user_data: UsersSchema,db: Session = Depends(get_db)):
     return create_user(db,user_data)
@@ -64,17 +64,20 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(),db: Session = Depends
     token = create_access_token(user.username)
     return {"access_token": token,"token_type": "bearer"}
 
-#-------------read-----------------------
-
-@app.get("/employee/all")
-def get_all_emp_details(emp:EmployeeResponse , db : Session = Depends(get_db)):
-    return get_all_emp(db)
-
+#-------------read------------------------------------------------------
 
 @app.get("/department/all")
 def get_all_dept(dept:DepartmentResponse , db : Session = Depends(get_db)):
     return fetch_dept(db)
 
+@app.get("/department/{dept_id}/Employees")
+def sort_emp_dept_wise(dept_id : str , db : Session = Depends(get_db)):
+    return fetch_emp_dept_wise(db , dept_id)
+
+#------------------------------------------------------------------------------
+@app.get("/employee/all")
+def get_all_emp_details(emp:EmployeeResponse , db : Session = Depends(get_db)):
+    return get_all_emp(db)
 
 @app.get("/employee/{emp_id}")
 def get_emp_details(emp_id : str , db : Session = Depends(get_db)):
@@ -86,27 +89,22 @@ def get_emp_dept(emp_id : str , db : Session = Depends(get_db)):
     return get_emp_dept_name(db , emp_id)
 
 
-@app.get("/department/{dept_id}/Employees")
-def sort_emp_dept_wise(dept_id : str , db : Session = Depends(get_db)):
-    return fetch_emp_dept_wise(db , dept_id)
-
-#-------------------Remaining----------------------
+#---------------------------------------------------------------
 @app.get("/users/me")
 def get_my_profile(current_user: Users = Depends(get_current_user)):
     return current_user
 
-#--------completed without verfiy admin dependency---------
-
 @app.get("/users/all")
 def get_all_users(users = UsersResponse , db: Session = Depends(get_db) , current_user :dict = Depends(verify_admin)):
     return fetch_all_user(db)
-#-------------update----------------------
+
+#-------------update--------------------------------------------------------
 
 @app.put("/employee/update/{emp_id}")
 def update_emp_func(emp_id : str , emp : EmployeeSchema ,db : Session = Depends(get_db)):
     return update_emp(db ,emp_id, emp)
 
-#-------------delete-----------------------
+#-------------delete-----------------------------------------------------
 @app.delete("/employee/delete/{emp_id}")
 def delete_emp_func( emp_id : str,db : Session = Depends(get_db) , current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id)

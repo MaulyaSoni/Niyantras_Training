@@ -111,7 +111,7 @@ def create_user(db: Session,user_data: UsersSchema):
     # new_user = Users(userid="user001",username=user_data.username,
     #     hashed_password=generate_hash_password(user_data.password),user_role="user")
 
-    new_user = Users(userid = "user002", username=user_data.username,
+    new_user = Users(username=user_data.username,
         hashed_password=generate_hash_password(user_data.password),user_role="user")
 
     db.add(new_user)
@@ -121,7 +121,7 @@ def create_user(db: Session,user_data: UsersSchema):
     return new_user
 
 # def create_admin(db:Session , user_data : UsersSchema):
-#     new_user = Users(userid = "admin001", username=user_data.username,
+#     new_user = Users(userid = "1001", username=user_data.username,
 #         hashed_password=generate_hash_password(user_data.password),user_role="Admin")
 
 #     db.add(new_user)
