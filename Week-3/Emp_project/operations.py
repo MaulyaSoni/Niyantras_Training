@@ -1,18 +1,17 @@
 import logging
-from typing import Annotated
-from fastapi import HTTPException , Depends ,Request , BackgroundTasks
+from fastapi import HTTPException , Depends ,  Request , BackgroundTasks
+from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-from models import Employee ,Department
-from schema import EmployeeSchema , EmployeeResponse , DepartmentSchema , DepartmentResponse , UsersSchema , UsersResponse
-from models import Users 
+from models import Employee , Department , Users
+from schema import EmployeeSchema , EmployeeResponse 
+from schema import DepartmentSchema , DepartmentResponse 
 from schema import UsersSchema , UsersResponse
 from hash_methods import generate_hash_password
 
 logging.basicConfig(
     filename="Log_employee_project.log",
-    level=logging.ERROR,
+    level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
@@ -24,7 +23,7 @@ class DataCannotInsertException(Exception):
 async def datacannotinsert_exception_handler(request: Request, exc: DataCannotInsertException):
     return JSONResponse(
         status_code=409,
-        content={"message": f"You can't insert a duplicate data"},
+        content={"message": f"You can't insert a duplicate data , {self.condition}"},
     )
 
 # Custom class 2
@@ -34,7 +33,7 @@ class InvalidEmpIDException(Exception):
 async def invalid_id_exception_handler(request :Request , exc : InvalidEmpIDException):
     return JSONResponse(
         status_code = 400,
-        content = {"message" : f"You can't have this prefix in employee ID , try this 'emp'"}
+        content = {"message" : f"You breaking syntax for company's employee ID "}
     )
 
 # Custom class 3 
@@ -68,22 +67,22 @@ def create_emp_data(db : Session , emp : EmployeeSchema):
             logging.warning(f"Duplicate Employee data insertion error")
             raise DataCannotInsertException(condition = existing_emp)
             # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
+
     except DataCannotInsertException as e:
         raise HTTPException(status_code=409,detail="Duplicate Data can't be inserted ")    
     
-    data = emp.e_id
-    res = data[0:3]
     try:
-        if res != "emp":
-            logging.warning(f"ID not match with prefix error")
+        if (res := emp.e_id[0:3]) != "emp":
+            logging.warning(f"ID not match with prefix ")
             raise InvalidEmpIDException()
+
     except InvalidEmpIDException as e: 
-        raise HTTPException(status_code = 401 , detail = "Invalid ID syntax")
+        raise HTTPException(status_code = 401 , detail = "Invalid ID syntax , make sure it matches with company's id")
 
     employee = Employee(e_id = emp.e_id , name = emp.name  , age = emp.age , dept_id = emp.dept_id)
     db.add(employee)
     db.commit()
-
+    logging.info(f"{emp.e_id} , New employee created")
     return{"New employee added successfully "}
 
 
@@ -93,17 +92,17 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
     
     try:
         if department_check:
-            logging.error("Department not found error")
+            logging.warning("Duplicate Department Data insertion")
             raise DataCannotInsertException(condition = department_check)
             # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
     
     except DataCannotInsertException as e:
-        raise HTTPException(status_code=409,detail="Duplicate Data can't be inserted ")    
+        raise HTTPException(status_code=409,detail="Duplicate Department Data can't be inserted ")    
     
     department = Department(dept_id = dept.dept_id , dept_name = dept.dept_name)
     db.add(department)
     db.commit()
-
+    logging.info(f"{dept.dept_id} , New Department created")
     return {"Department details inserted successfully..."}
 
 def create_user(db: Session,user_data: UsersSchema):
@@ -111,6 +110,7 @@ def create_user(db: Session,user_data: UsersSchema):
     existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
 
     if existing_user:
+        logging.warning("Duplicate User details input ")
         raise HTTPException(status_code=409,detail="Username already exists")
 
     # new_user = Users(userid="user001",username=user_data.username,
@@ -122,7 +122,7 @@ def create_user(db: Session,user_data: UsersSchema):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
+    logging.info("New User created")
     return new_user
 
 # def create_admin(db:Session , user_data : UsersSchema):
@@ -134,15 +134,14 @@ def create_user(db: Session,user_data: UsersSchema):
 #     db.refresh(new_user)
 
 #     return new_user
-
     
 #-----------------------------read-----------------------------
 def get_all_emp(db:Session):
-    # logging.info("Fetching all employee details")
+    logging.info("Fetching all employee details")
     return db.query(Employee).all()
 
 def fetch_dept(db : Session):
-    # logging.info("Fetching all department details")
+    logging.info("Fetching all department details")
     return db.query(Department).all()
 
 def fetch_emp_details(db : Session , emp_id : str):
@@ -157,7 +156,6 @@ def fetch_emp_details(db : Session , emp_id : str):
 def fetch_emp_dept_wise(db : Session , dept_id : str):
 
     department = db.get(Department , dept_id)
-
     if department is None :
         logging.error(f"{dept_id} not found error in sort (get) emp/dept")
         raise HTTPException(status_code = 404 , detail = "..Departent does'nt exist..")
@@ -165,6 +163,7 @@ def fetch_emp_dept_wise(db : Session , dept_id : str):
     return department.employee_object
     
 def get_emp_dept_name(db:Session , emp_id : str):
+    
     employee = db.get(Employee , emp_id)
     if employee is None:
         logging.error(f"{emp_id} not found error in get emp/dept_name ")
@@ -182,7 +181,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     employee =  db.get(Employee , emp_id)
     
     if employee is None :
-        logging.info(f"{user_id} , updation error ")
+        logging.warning(f"{user_id} , employee not found while updating ")
         raise HTTPException(status_code = 404 , detail = "User not found for updating the data")
     
     try:
@@ -198,6 +197,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     db.commit()
     db.refresh(employee)
     background_tasks.add_task(update_notification , emp_id)
+    logging.info(f"{emp_id} , employee updated ")
     return {"Employee details update successfully "}
 
 #-----------------------Delete---------------
@@ -205,10 +205,26 @@ def delete_emp(db : Session , emp_id : str ):
 
     employee = db.get(Employee , emp_id)
     if employee is None:
-        logging.error("employee not found in delete function ")
+        logging.warning("employee not found in delete function ")
         raise HTTPException(status_code = 404 , detail = "!! Unable to delete !!..Employee data not found..")
 
     db.delete(employee)
     db.commit()
-
+    logging.info(f"{emp_id} , employee deleted ")
     return {f"Employee {emp_id} deleted successfully"}
+
+def delete_dept(db:Session , dept_id : str ):
+
+    department = db.get(Department , dept_id)
+
+    if department is None :
+        logging.error(f"{dept_id} not found error in sort (get) emp/dept")
+        raise HTTPException(status_code = 404 , detail = "..Departent does'nt exist..")
+   
+    if department.employee_object:
+        logging.error(f"trying to delete Department containing emp")
+        raise HTTPException(status_code = 403 , detail = "can't delete , the department contains employee ")
+    
+    db.delete(department)
+    db.commit()
+    return {f"{dept_id} , department deleted successfully "}
