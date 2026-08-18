@@ -3,20 +3,6 @@ from fastapi.security import OAuth2PasswordBearer
 from security_functions import get_current_user 
 from models import Users
 
-# Dummy 
-# def get_current_user():
-#     return{
-#         "username" : "MS",
-#         "role":"Admin"
-#     }
-
-def verify_admin(current_user : dict = Depends(get_current_user)):
-    if current_user["role"] != "Admin":
-        raise HTTPException(status_code = 400 , detail="..You don't have access (Admin access rejected)..")
-    
-    return current_user
-
-
 def emp_id_check(emp_id):
     data = emp_id
     res = data[0:3]
@@ -31,6 +17,6 @@ def verify_emp_id(current_emp_id:str=Depends(emp_id_check)):
 
 def verify_admin(current_user: Users = Depends(get_current_user)):
     if current_user.user_role != "Admin":
-        raise HTTPException(status_code=403,detail="Admin access required")
+        raise HTTPException(status_code = 403 , detail="Admin access rejected")
 
     return current_user

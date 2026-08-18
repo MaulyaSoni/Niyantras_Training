@@ -99,8 +99,7 @@ def get_emp_dept(
 #---------------------------------------------------------------
 @app.get("/users/me")
 def get_my_info(current_user: Users = Depends(get_current_user)):
-        return{"userid":current_user.userid , "username" : current_user.username}
-
+    return{"userid":current_user.userid , "username" : current_user.username}
 
 @app.get("/users/all")
 def get_all_users(
