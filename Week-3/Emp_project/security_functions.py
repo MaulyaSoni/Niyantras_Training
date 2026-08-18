@@ -6,11 +6,12 @@ from database import get_db
 from models import Users
 from hash_methods import verify_hash_password
 from datetime import datetime , timedelta , timezone
-
+import os 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-SECRET_KEY = "my-secret-key"
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 ALGORITHM = "HS256"
 
 def get_username_from_token(token:str):
@@ -32,7 +33,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(g
         raise HTTPException(status_code=401,detail="User not found")
     return user
 
-def authenticate_user(db: Session,username: str,password: str):
+def authenticate_user(db: Session, username: str, password: str):
     # row matching statement for user 
     user = (db.query(Users).filter(Users.username == username).first())
     if user is None:

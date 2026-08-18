@@ -64,7 +64,7 @@ def token_generation(
     if user is None:
         raise HTTPException(status_code=401,detail="Incorrect username or password")
     token = create_access_token(user.username)
-    logging.info(f"Access token created for {user}")
+    logging.info(f"Access token created for user : '{form_data.username}'")
     return {"access_token": token,"token_type": "bearer"}
 
 #-------------read------------------------------------------------------
