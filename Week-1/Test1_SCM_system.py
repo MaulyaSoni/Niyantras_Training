@@ -11,7 +11,6 @@ def after_total(func):
     return wrapper
 
 
-<<<<<<< HEAD:Test1_SCM_system.py
 def get_int(prompt, error_message):
     while True:
         try:
@@ -19,8 +18,6 @@ def get_int(prompt, error_message):
         except ValueError:
             print(error_message)
 
-=======
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/Test1_SCM_system.py
 @dataclass
 class Customer:
     customer_id : int
@@ -40,11 +37,7 @@ class ProductDetail:
         for i in range(self.n):
             item_name = input(f"\nName of Item no. {i+1} : ")
             while True:
-<<<<<<< HEAD:Test1_SCM_system.py
-                item_price = get_int("Price of the Item  : ", "Please enter a whole number for the item price.")
-=======
                 item_price = get_int_input("Price of the Item  : ", "Please enter a whole number for the item price.")
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/Test1_SCM_system.py
                 if item_price > 0:
                     item_dict[item_name] = item_price
                     break   
@@ -107,29 +100,17 @@ print("""
 => ...Fill the below fields to generate the BILL... <=
 """)
 
-<<<<<<< HEAD:Test1_SCM_system.py
-n = get_int("Enter the number of items : ", "Please enter a whole number for the number of items.")
-
-if n > 0:
-    gst = get_int("Enter the rate of gst (withuot '%' sign) : ", "Please enter a whole number for GST.")
-    # Calculation class instance 
-=======
 n = get_int_input("Enter the number of items : ", "Please enter a whole number for the number of items.")
 
 if n > 0:
     gst = get_int_input("Enter the rate of gst (withuot '%' sign) : ", "Please enter a whole number for GST.")
- 
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/Test1_SCM_system.py
+    # Calculation class instance 
     cal_obj = Calculations(gst, n)
     total , gst_total , item_dict = cal_obj.calc_total()
     
     
     while True:
-<<<<<<< HEAD:Test1_SCM_system.py
-        discount = get_int("""
-=======
         discount = get_int_input("""
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/Test1_SCM_system.py
 => Before Generating bill , 
 
 If you wish then enter the rate of discount you want to give to the customer (withuot '%' sign) 

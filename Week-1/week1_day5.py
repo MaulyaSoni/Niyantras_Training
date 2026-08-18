@@ -19,32 +19,7 @@ class StudentDetails():
     def card(self):
         return self.s_id , self.std_name , self.n
 
-<<<<<<< HEAD:week1_day5.py
-
-
-
-        
-    # def __init__(self):
-    #     print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
-    # def card(self):
-    #     s_id = input("\nEnter the ID of the student : ")
-    #     std_name = input("Enter the Name of the Student : ")
-    #     return s_id , std_name
-
-# s_id = input("\nEnter the ID of the student : ")
-# std_name = input("Enter the Name of the Student : ")    
-# n = int(input("Enter the Number of Subjects : "))
-
-s_id = input("\nEnter the ID of the student : ")
-std_name = input("Enter the Name of the Student : ")    
-n = get_int("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
-
-st = StudentDetails(s_id=s_id,std_name=std_name,n=n)
-s_id , std_name , n = st.card()
-
 # Abstract Class 
-=======
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day5.py
 class Student(ABC):
     def __init__(self, s_id , name ):
         self.s_id = s_id
@@ -66,11 +41,7 @@ class MarksDetails(Student):
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-<<<<<<< HEAD:week1_day5.py
                 marks = get_int("Enter marks between (0-100): ", "Please enter a whole number for marks.")
-=======
-                marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day5.py
                 if 0 <= marks <= 100:
                     grade_dict[subj] = marks
                     break
@@ -116,24 +87,8 @@ class Result:
     def res_func(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
-<<<<<<< HEAD:week1_day5.py
-# main part 
-flag = True 
-# sd = StudentDetails()
-# s_id , std_name = sd.card()       
-
-# name condition 
-
-if std_name.replace(" ", "").isalpha() and n>0: # isalpha() 
-    # # number of subject condition 
-    # if n>0:
-
-    cal_obj= Calculations()
-    t_marks , avg = cal_obj.avg(n)
-=======
 if __name__ == "__main__":
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day5.py
-    
+# main part 
     flag = True 
     
     s_id = input("\nEnter the ID of the student : ")
@@ -141,7 +96,7 @@ if __name__ == "__main__":
     n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
 
     if std_name.replace(" ", "").isalpha() and n>0: 
- 
+
         st = StudentDetails(s_id=s_id,std_name=std_name,n=n)
         s_id , std_name , n = st.card()
     

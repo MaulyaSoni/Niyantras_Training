@@ -17,6 +17,9 @@ class StudentDetails:
         std_name = input("Enter the Name of the Student : ")
         return s_id , std_name
 
+s = StudentDetails()
+s_id , std_name = s.card()
+
 # Abstract Class 
 class Student(ABC):
     def __init__(self, s_id , name ):
@@ -39,11 +42,7 @@ class MarksDetails(Student):
         for _ in range(n):
             subj = input("\nEnter name of the Subject : ")
             while True:
-<<<<<<< HEAD:week1_day4.py
                 marks = get_int("Enter marks between (0-100): ", "Please enter a whole number for marks.")
-=======
-                marks = get_int_input("Enter marks between (0-100): ", "!! Invalid Input !! ......Please enter a whole number for marks.")
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day4.py
                 if 0 <= marks <= 100:
                     break
                 print("Marks can be entered only between 0-100")
@@ -75,11 +74,7 @@ class Rank:
     def __init__(self):
         print("Rank class object created")
 
-<<<<<<< HEAD:week1_day4.py
     def grade_func(self, avg):
-=======
-    def grade_function(self, avg):
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day4.py
         grade =''
         self.avg = avg
         return grade_func(self.avg)
@@ -98,29 +93,7 @@ class Result:
 
 if __name__ == "__main__":
 
-<<<<<<< HEAD
-<<<<<<< HEAD:week1_day4.py
-# name condition 
-if std_name.replace(" ", "").isalpha():
-    # number of subject condition 
-    n = get_int("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
-    if n>0:
-        cal_obj= Calculations()
-        t_marks , avg = cal_obj.avg(n)
-
-        # marks negavtive condition
-        if flag == True:
-            rnk= Rank()
-            gr = rnk.grade_func(avg)
-=======
     flag = True 
-=======
->>>>>>> main
-    sd = StudentDetails()
-    s_id , std_name = sd.card()
-
->>>>>>> a69d5510c615d93ff77b54d140c83e3f3f4a5372:Week-1/week1_day4.py
-
     if std_name.replace(" ", "").isalpha():
         # number of subject condition 
         n = get_int_input("Enter the Number of Subjects : ", "Please enter a whole number for the number of subjects.")
@@ -129,7 +102,7 @@ if std_name.replace(" ", "").isalpha():
             t_marks , avg = cal_obj.avg(n)
 
             rnk= Rank()
-            gr = rnk.grade_function(avg)
+            gr = rnk.grade_func(avg)
 
             res = Result(s_id,std_name,avg,gr,t_marks,n)
             print(res)
