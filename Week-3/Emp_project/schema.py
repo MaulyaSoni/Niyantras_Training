@@ -38,6 +38,6 @@ class UsersResponse(BaseModel):
     userid : int
     username : str
     # hashed_password : str
-    role : str
+    user_role : str
 
     model_config = ConfigDict(from_attributes = True)

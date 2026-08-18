@@ -34,7 +34,7 @@ def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(g
     return user
 
 def authenticate_user(db: Session, username: str, password: str):
-    # row matching statement for user 
+    # row matching statement for user  
     user = (db.query(Users).filter(Users.username == username).first())
     if user is None:
         return None

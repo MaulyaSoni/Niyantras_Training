@@ -16,7 +16,7 @@ from operations import delete_emp , delete_dept
 from operations import DataCannotInsertException , datacannotinsert_exception_handler
 from operations import InvalidEmpIDException , invalid_id_exception_handler 
 from operations import DifferentIDException , different_id_exception_handler , update_notification
-from dependencies import get_current_user, verify_admin , verify_emp_id
+from dependencies import get_current_user, verify_admin
 from security_functions import authenticate_user , create_access_token
 # from operations import create_admin
 

@@ -23,7 +23,7 @@ class DataCannotInsertException(Exception):
 async def datacannotinsert_exception_handler(request: Request, exc: DataCannotInsertException):
     return JSONResponse(
         status_code=409,
-        content={"message": f"You can't insert a duplicate data , {self.condition}"},
+        content={"message": f"You can't insert a duplicate data , {exc.condition}"},
     )
 
 # Custom class 2
@@ -83,7 +83,7 @@ def create_emp_data(db : Session , emp : EmployeeSchema):
     db.add(employee)
     db.commit()
     logging.info(f"{emp.e_id} , New employee created")
-    return{"New employee added successfully "}
+    return "New employee added successfully"
 
 
 def create_dept_data(db : Session , dept : DepartmentSchema):
@@ -103,7 +103,7 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
     db.add(department)
     db.commit()
     logging.info(f"{dept.dept_id} , New Department created")
-    return {"Department details inserted successfully..."}
+    return "Department details inserted successfully..."
 
 def create_user(db: Session,user_data: UsersSchema):
 
@@ -181,7 +181,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     employee =  db.get(Employee , emp_id)
     
     if employee is None :
-        logging.warning(f"{user_id} , employee not found while updating ")
+        logging.warning(f"{emp_id} , employee not found while updating ")
         raise HTTPException(status_code = 404 , detail = "User not found for updating the data")
     
     try:
@@ -198,7 +198,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     db.refresh(employee)
     background_tasks.add_task(update_notification , emp_id)
     logging.info(f"{emp_id} , employee updated ")
-    return {"Employee details update successfully "}
+    return "Employee details update successfully"
 
 #-----------------------Delete---------------
 def delete_emp(db : Session , emp_id : str ):
@@ -211,7 +211,7 @@ def delete_emp(db : Session , emp_id : str ):
     db.delete(employee)
     db.commit()
     logging.info(f"{emp_id} , employee deleted ")
-    return {f"Employee {emp_id} deleted successfully"}
+    return f"Employee {emp_id} deleted successfully"
 
 def delete_dept(db:Session , dept_id : str ):
 
@@ -227,4 +227,4 @@ def delete_dept(db:Session , dept_id : str ):
     
     db.delete(department)
     db.commit()
-    return {f"{dept_id} , department deleted successfully "}
+    return f"{dept_id} , department deleted successfully"
