@@ -56,6 +56,7 @@ def load_employees(file_name):
 
             except(ValueError,IndexError,AgeException,NameException) as error:
                 logging.error(f"Bad Row : {row} and it's following Error : {error}")
+                
 
 
     return employee_list

@@ -43,7 +43,7 @@ def validate_row(row):
         raise NullIDException("...Customer ID can't be null...") 
  
     quantity =  int(row[6])
-    if quantity is None or quantity <= -1:
+    if quantity <= 0:
         raise NullQuantityException(f"Quantity can't be null or negative ,  value of quantity : {quantity}")
 
 def load_data(file_name):

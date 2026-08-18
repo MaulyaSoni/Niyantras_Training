@@ -7,6 +7,6 @@ def high_and_low(records):
         amt = int(row.Total_Amount)
 
         t_max = max(t_max ,amt)
-        res = res if res < amt else amt
+        res = min(res , amt)
 
     return t_max , res

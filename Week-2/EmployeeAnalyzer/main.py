@@ -4,8 +4,8 @@ from api import predict_nationality
 
 def main():
     print(" .............EMPLOYEE ANALYSING SYSTEM ...........")
-
-    load_employees("tech_company_employee_data_1000.csv")
+    # for validate row function 
+    # load_employees("tech_company_employee_data_1000.csv")
 
     emp_name = input("Enter employee name to guess it's nationality: ")
     result = predict_nationality(emp_name)
