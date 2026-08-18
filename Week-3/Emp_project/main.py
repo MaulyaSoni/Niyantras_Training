@@ -69,28 +69,28 @@ def token_generation(
 
 #-------------read------------------------------------------------------
 
-@app.get("/department/all")
+@app.get("/department/all",response_model = DepartmentResponse)
 def get_all_dept(dept:DepartmentResponse , db : Session = Depends(get_db)):
     return fetch_dept(db)
 
-@app.get("/department/{dept_id}/employees")
+@app.get("/department/{dept_id}/employees" , response_model = DepartmentResponse)
 def sort_emp_dept_wise(dept_id : str , db : Session = Depends(get_db)):
     return fetch_emp_dept_wise(db , dept_id)
 
 #------------------------------------------------------------------------------
-@app.get("/employee/all")
+@app.get("/employee/all" , response_model = EmployeeResponse)
 def get_all_emp_details(
     emp: EmployeeResponse,
     db : Session = Depends(get_db)):
     return get_all_emp(db)
 
-@app.get("/employee/{emp_id}")
+@app.get("/employee/{emp_id}" , response_model = EmployeeResponse)
 def get_emp_details(
     emp_id : str,
     db : Session = Depends(get_db)):
     return fetch_emp_details(db , emp_id)
 
-@app.get("/employee/{emp_id}/department")
+@app.get("/employee/{emp_id}/department", response_model = EmployeeResponse)
 def get_emp_dept(
     emp_id : str,
     db : Session = Depends(get_db)):
@@ -101,7 +101,7 @@ def get_emp_dept(
 def get_my_info(current_user: Users = Depends(get_current_user)):
     return{"userid":current_user.userid , "username" : current_user.username}
 
-@app.get("/users/all")
+@app.get("/users/all" , response_model=UsersResponse)
 def get_all_users(
     users = UsersResponse,
     db: Session = Depends(get_db),

@@ -123,7 +123,7 @@ def create_user(db: Session,user_data: UsersSchema):
     db.commit()
     db.refresh(new_user)
     logging.info("New User created")
-    return new_user
+    return f"New user created : {new_user.username}"
 
 # def create_admin(db:Session , user_data : UsersSchema):
 #     new_user = Users(userid = "1001", username=user_data.username,

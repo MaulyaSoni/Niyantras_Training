@@ -1,3 +1,4 @@
+import os 
 import jwt
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -6,7 +7,6 @@ from database import get_db
 from models import Users
 from hash_methods import verify_hash_password
 from datetime import datetime , timedelta , timezone
-import os 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
