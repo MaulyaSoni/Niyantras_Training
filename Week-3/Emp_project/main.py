@@ -1,25 +1,21 @@
-from fastapi import FastAPI, HTTPException , Request ,Depends , BackgroundTasks
 import logging
 from sqlalchemy.orm import Session
+from fastapi import FastAPI, HTTPException , Depends , BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 from database import get_db , engine
 from models import Base , Employee , Department, Users
 from schema import EmployeeResponse , EmployeeSchema 
 from schema import DepartmentSchema , DepartmentResponse
 from schema import UsersSchema , UsersResponse
-from operations import create_dept_data , create_emp_data , create_user
-from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise , fetch_all_user
-from operations import update_emp , get_all_emp , get_emp_dept_name
-from operations import delete_emp , delete_dept , delete_user
+from operations.employee import create_emp_data , update_emp , delete_emp
+from operations.employee import get_all_emp , get_emp_dept_name , fetch_emp_details , fetch_emp_dept_wise 
+from operations.department import create_dept_data , fetch_dept , delete_dept
+from operations.users import create_user , fetch_all_user , delete_user
+from operations.users import create_admin
+from operations.token import create_token
 from dependencies import get_current_user, verify_admin
 from security_functions import authenticate_user , create_access_token
-from operations import create_admin
 
-# from operations import DataCannotInsertException , datacannotinsert_exception_handler
-# from operations import InvalidEmpIDException , invalid_id_exception_handler 
-# from operations import DifferentIDException , different_id_exception_handler , update_notification
 
 app = FastAPI()
 
@@ -36,111 +32,127 @@ def create_tables():
 def create_emp(
     emp : EmployeeSchema,
     db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
-    return create_emp_data(db , emp)
+    return create_emp_data(db , emp , user_log)
 
 @app.post("/department" , response_model = DepartmentResponse , status_code = 201)
 def create_dept(
     dept : DepartmentSchema,
     db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)): 
-    return create_dept_data(db , dept)
+    return create_dept_data(db , dept , user_log)
 
 #-----------------------------------------User perspective --------------------------------------
 @app.post("/register" , response_model = UsersResponse , status_code=201)
-def register(
+def register_user(
     user_data: UsersSchema,
-    db: Session = Depends(get_db)):
-    return create_user(db,user_data)
+    db: Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
+    return create_user(db , user_data , user_log)
 
 @app.post("/admin" , response_model = UsersResponse , status_code = 201)
-def register(
+def register_admin(
     user_data: UsersSchema,
-    db: Session = Depends(get_db)):
-    return create_admin(db,user_data)
+    db: Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
+    return create_admin(db , user_data , user_log)
 
 @app.post("/token")
 def token_generation(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)):
-    
-    user = authenticate_user(db,form_data.username,form_data.password)
-    
-    if user is None:
-        raise HTTPException(status_code=401,detail="Incorrect username or password")
-    token = create_access_token(user.username)
-    logging.info(f"Access token created for user : '{form_data.username}'")
-    return {"access_token": token,"token_type": "bearer"}
+    db: Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
+    return create_token(db , form_data , user_log)
 
 #-------------read------------------------------------------------------
 
 @app.get("/department/all",response_model = list[DepartmentResponse])
-def get_all_dept(db : Session = Depends(get_db)):
-    return fetch_dept(db)
+def get_all_dept(
+    db : Session = Depends(get_db), 
+    user_log : Users = Depends(get_current_user)):
+    return fetch_dept(db,user_log)
 
 @app.get("/department/{dept_id}/employees" , response_model = list[DepartmentResponse])
-def sort_emp_dept_wise(dept_id : str , db : Session = Depends(get_db)):
+def sort_emp_dept_wise(
+    dept_id : str,
+    db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
     return fetch_emp_dept_wise(db , dept_id)
 
 @app.get("/employee/all" , response_model = list[EmployeeResponse])
 def get_all_emp_details(
-    db : Session = Depends(get_db)):
-    return get_all_emp(db)
+    db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
+    return get_all_emp(db , user_log)
+
 #------------------------------------------------------------------------------
 
 @app.get("/employee/{emp_id}" , response_model = EmployeeResponse)
 def get_emp_details(
     emp_id : str,
-    db : Session = Depends(get_db)):
+    db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
     return fetch_emp_details(db , emp_id)
 
 @app.get("/employee/{emp_id}/department", response_model = DepartmentResponse)
 def get_emp_dept(
     emp_id : str,
-    db : Session = Depends(get_db)):
+    db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user)):
     return get_emp_dept_name(db , emp_id)
 
 #---------------------------------------------------------------
+
 @app.get("/users/me" , response_model= UsersResponse)
-def get_my_info(current_user: Users = Depends(get_current_user)):
+def get_my_info(
+    current_user: Users = Depends(get_current_user),
+    user_log : Users = Depends(get_current_user)):
     return current_user
-    # return{"userid":current_user.userid , "username" : current_user.username}
 
 @app.get("/users/all" , response_model = list[UsersResponse])
 def get_all_users(
     users = UsersResponse,
     db: Session = Depends(get_db),
-    current_user :dict = Depends(verify_admin)):
+    current_user :dict = Depends(verify_admin),
+    user_log : Users = Depends(get_current_user)):
     return fetch_all_user(db)
 
 #-------------update--------------------------------------------------------
+
 @app.put("/employee/update/{emp_id}" , response_model= EmployeeResponse , status_code = 200)
 def update_emp_func(
     emp_id : str, 
     emp : EmployeeSchema, 
     background_tasks : BackgroundTasks, 
     db : Session = Depends(get_db),
-    current_user : dict = Depends(verify_admin)):
-    return update_emp(db ,emp_id, emp , background_tasks)
+    current_user : dict = Depends(verify_admin),
+    user_log : Users = Depends(get_current_user)):
+    return update_emp(db , emp_id , emp , background_tasks , user_log)
 
 #-------------delete-----------------------------------------------------
+
 @app.delete("/employee/delete/{emp_id}")
 def delete_emp_func(
     emp_id : str,
     db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
-    return delete_emp(db , emp_id)
+    return delete_emp(db , emp_id , user_log)
 
 @app.delete("/department/delete/{dept_id}")
 def delete_dept_func(
     dept_id : str,
     db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
-    return delete_dept(db , dept_id )
+    return delete_dept(db , dept_id , user_log)
 
 @app.delete("/users/delete/{userid}")
 def delete_user_func(
     userid : str,
     db : Session = Depends(get_db),
+    user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
-    return delete_user(db , userid)
+    return delete_user(db , userid , user_log)
