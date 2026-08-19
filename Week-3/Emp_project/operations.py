@@ -8,17 +8,28 @@ from schema import EmployeeSchema , EmployeeResponse
 from schema import DepartmentSchema , DepartmentResponse 
 from schema import UsersSchema , UsersResponse
 from hash_methods import generate_hash_password
+from security_functions import get_current_user
+import os
+#ADMIN_KEY = os.getenv("ADMIN_KEY")
 
 logging.basicConfig(
     filename="Log_employee_project.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
+#--------------------Custom Exception Classes-----------------------------
 
-# Custom class 1
 class DataCannotInsertException(Exception):
     def __init__(self, condition):
         self.condition = condition
+
+class InvalidEmpIDException(Exception):
+    pass
+
+class DifferentIDException(Exception):
+    def __init__(self , first_id , second_id):
+        self.first_id = first_id
+        self.second_id = second_id
 
 async def datacannotinsert_exception_handler(request: Request, exc: DataCannotInsertException):
     return JSONResponse(
@@ -26,21 +37,11 @@ async def datacannotinsert_exception_handler(request: Request, exc: DataCannotIn
         content={"message": f"You can't insert a duplicate data , {exc.condition}"},
     )
 
-# Custom class 2
-class InvalidEmpIDException(Exception):
-    pass
-
 async def invalid_id_exception_handler(request :Request , exc : InvalidEmpIDException):
     return JSONResponse(
         status_code = 400,
         content = {"message" : f"You breaking syntax for company's employee ID "}
     )
-
-# Custom class 3 
-class DifferentIDException(Exception):
-    def __init__(self , first_id , second_id):
-        self.first_id = first_id
-        self.second_id = second_id
 
 async def different_id_exception_handler(request : Request , exc : DifferentIDException):
     return JSONResponse(
@@ -85,9 +86,7 @@ def create_emp_data(db : Session , emp : EmployeeSchema):
     logging.info(f"{emp.e_id} , New employee created")
     return employee
 
-
 def create_dept_data(db : Session , dept : DepartmentSchema):
-
     department_check = db.get(Department , dept.dept_id)
     
     try:
@@ -106,12 +105,11 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
     return department
 
 def create_user(db: Session,user_data: UsersSchema):
-
     existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
 
     if existing_user:
         logging.warning("Duplicate User details input ")
-        raise HTTPException(status_code=409,detail="Username already exists")
+        raise HTTPException(status_code=409,detail="User already exists")
 
     # new_user = Users(userid="user001",username=user_data.username,
     #     hashed_password=generate_hash_password(user_data.password),user_role="user")
@@ -123,19 +121,23 @@ def create_user(db: Session,user_data: UsersSchema):
     db.commit()
     db.refresh(new_user)
     logging.info("New User created")
-    return f"New user created : {new_user.username}"
+    return new_user
 
-# def create_admin(db:Session , user_data : UsersSchema):
-#     new_user = Users(userid = "1001", username=user_data.username,
-#         hashed_password=generate_hash_password(user_data.password),user_role="Admin")
+def create_admin(db:Session , user_data : UsersSchema):
 
-#     db.add(new_user)
-#     db.commit()
-#     db.refresh(new_user)
+    # if user_data.admin_key != ADMIN_KEY :
+    #    return {"message":"admin key not matched"}
 
-#     return new_user
-    
+    new_user = Users(username=user_data.username,
+    hashed_password=generate_hash_password(user_data.password),user_role="Admin")
+
+    db.add(new_user)
+    db.commit()
+    return new_user
+   
+
 #-----------------------------read-----------------------------
+
 def get_all_emp(db:Session):
     logging.info("Fetching all employee details")
     return db.query(Employee).all()
@@ -177,6 +179,7 @@ def fetch_all_user(db:Session):
     return db.query(Users).all()
 
 #----------------Update----------------------
+
 def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_tasks : BackgroundTasks):
     employee =  db.get(Employee , emp_id)
     
@@ -196,11 +199,14 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     employee.age = emp.age
     db.commit()
     db.refresh(employee)
+    # current_user = get_current_user()
     background_tasks.add_task(update_notification , emp_id)
     logging.info(f"{emp_id} , employee updated ")
+    
     return employee
 
-#-----------------------Delete---------------
+#-----------------------Delete-----------------------------------------------------------
+
 def delete_emp(db : Session , emp_id : str ):
 
     employee = db.get(Employee , emp_id)
@@ -228,3 +234,16 @@ def delete_dept(db:Session , dept_id : str ):
     db.delete(department)
     db.commit()
     return f"{dept_id} , department deleted successfully"
+
+
+def delete_user(db: Session , userid : str):
+    
+    user = db.get(Users , userid)
+    if user is None:
+        raise HTTPException(status_code = 404 , detail="user not found")
+    
+    db.delete(user)
+    db.commit()
+    return f"{userid} , deleted successfully"
+
+#----------------------------------------------------------------------------------------

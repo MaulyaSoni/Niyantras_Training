@@ -33,4 +33,10 @@ class Users(Base):
     username : Mapped[str] = mapped_column(String(20) , nullable = False)
     hashed_password : Mapped[str] = mapped_column(String(100) , nullable = False)
     user_role : Mapped[str] = mapped_column(String(20), nullable = False)
+    # admin_key : Mapped[str] = mapped_column(String(100))
     
+# class Admin(Base):
+#     __tablename__ = "Admin_table"
+
+#     admin_id : Mapped[int] = mapped_column(Integer , primary_key = True , autoincrement = True)
+#     admin_name : Mapped[str] = mapped_column(String , nullable = False)

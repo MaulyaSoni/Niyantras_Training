@@ -16,6 +16,7 @@ class EmployeeSchema(BaseModel):
     name : str = Field(max_length = 25)
     age : int = Field(gt = 0) #greater than 0
     dept_id : str = Field(min_length = 4)
+    
 class EmployeeResponse(BaseModel):
     e_id : str
     name : str
@@ -24,9 +25,11 @@ class EmployeeResponse(BaseModel):
     
     # for fetching data , setting the rule to read from the database with the help of ConfigDict
     model_config = ConfigDict(from_attributes = True)
+
 class UsersSchema(BaseModel):
     username : str = Field(min_length = 2)
     password : str = Field(min_length = 6)
+    # admin_key : str | None = None
 
 class UsersResponse(BaseModel):
     userid : int

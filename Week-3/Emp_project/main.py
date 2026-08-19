@@ -12,13 +12,14 @@ from schema import UsersSchema , UsersResponse
 from operations import create_dept_data , create_emp_data , create_user
 from operations import fetch_dept , fetch_emp_details , fetch_emp_dept_wise , fetch_all_user
 from operations import update_emp , get_all_emp , get_emp_dept_name
-from operations import delete_emp , delete_dept
-from operations import DataCannotInsertException , datacannotinsert_exception_handler
-from operations import InvalidEmpIDException , invalid_id_exception_handler 
-from operations import DifferentIDException , different_id_exception_handler , update_notification
+from operations import delete_emp , delete_dept , delete_user
 from dependencies import get_current_user, verify_admin
 from security_functions import authenticate_user , create_access_token
-# from operations import create_admin
+from operations import create_admin
+
+# from operations import DataCannotInsertException , datacannotinsert_exception_handler
+# from operations import InvalidEmpIDException , invalid_id_exception_handler 
+# from operations import DifferentIDException , different_id_exception_handler , update_notification
 
 app = FastAPI()
 
@@ -52,11 +53,11 @@ def register(
     db: Session = Depends(get_db)):
     return create_user(db,user_data)
 
-# @app.post("/admin" , response_model = UsersResponse , status_code = 201)
-# def register(
-#     user_data: UsersSchema,
-#     db: Session = Depends(get_db)):
-#     return create_admin(db,user_data)
+@app.post("/admin" , response_model = UsersResponse , status_code = 201)
+def register(
+    user_data: UsersSchema,
+    db: Session = Depends(get_db)):
+    return create_admin(db,user_data)
 
 @app.post("/token")
 def token_generation(
@@ -136,3 +137,10 @@ def delete_dept_func(
     db : Session = Depends(get_db),
     current_user : dict = Depends(verify_admin)):
     return delete_dept(db , dept_id )
+
+@app.delete("/users/delete/{userid}")
+def delete_user_func(
+    userid : str,
+    db : Session = Depends(get_db),
+    current_user : dict = Depends(verify_admin)):
+    return delete_user(db , userid)
