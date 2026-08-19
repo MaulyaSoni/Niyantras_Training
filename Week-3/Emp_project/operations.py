@@ -83,7 +83,7 @@ def create_emp_data(db : Session , emp : EmployeeSchema):
     db.add(employee)
     db.commit()
     logging.info(f"{emp.e_id} , New employee created")
-    return "New employee added successfully"
+    return employee
 
 
 def create_dept_data(db : Session , dept : DepartmentSchema):
@@ -103,7 +103,7 @@ def create_dept_data(db : Session , dept : DepartmentSchema):
     db.add(department)
     db.commit()
     logging.info(f"{dept.dept_id} , New Department created")
-    return "Department details inserted successfully..."
+    return department
 
 def create_user(db: Session,user_data: UsersSchema):
 
@@ -198,7 +198,7 @@ def update_emp(db : Session , emp_id : str , emp : EmployeeSchema , background_t
     db.refresh(employee)
     background_tasks.add_task(update_notification , emp_id)
     logging.info(f"{emp_id} , employee updated ")
-    return "Employee details update successfully"
+    return employee
 
 #-----------------------Delete---------------
 def delete_emp(db : Session , emp_id : str ):

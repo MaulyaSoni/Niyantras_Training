@@ -23,7 +23,7 @@ def get_username_from_token(token:str):
             raise HTTPException(status_code = 401 , detail = "Invalid Token")
         return username
     
-    except :
+    except jwt.PyJWTError :
         raise HTTPException(status_code = 401 , detail = "Invalid Token or you have not register with token")
 
 def get_current_user(token: str = Depends(oauth2_scheme),db: Session = Depends(get_db)):

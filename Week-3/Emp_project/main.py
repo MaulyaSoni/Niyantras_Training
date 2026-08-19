@@ -31,14 +31,14 @@ def create_tables():
 
 #--------------create--------------------------------------------------------------------
 
-@app.post("/employee")
+@app.post("/employee", response_model = EmployeeResponse , status_code = 201)
 def create_emp(
     emp : EmployeeSchema,
     db : Session = Depends(get_db),
     current_user : dict = Depends(verify_admin)):
     return create_emp_data(db , emp)
 
-@app.post("/department")
+@app.post("/department" , response_model = DepartmentResponse , status_code = 201)
 def create_dept(
     dept : DepartmentSchema,
     db : Session = Depends(get_db),
@@ -46,12 +46,16 @@ def create_dept(
     return create_dept_data(db , dept)
 
 #-----------------------------------------User perspective --------------------------------------
-@app.post("/register")
-def register(user_data: UsersSchema,db: Session = Depends(get_db)):
+@app.post("/register" , response_model = UsersResponse , status_code=201)
+def register(
+    user_data: UsersSchema,
+    db: Session = Depends(get_db)):
     return create_user(db,user_data)
 
-# @app.post("/admin")
-# def register(user_data: UsersSchema,db: Session = Depends(get_db)):
+# @app.post("/admin" , response_model = UsersResponse , status_code = 201)
+# def register(
+#     user_data: UsersSchema,
+#     db: Session = Depends(get_db)):
 #     return create_admin(db,user_data)
 
 @app.post("/token")
@@ -69,20 +73,19 @@ def token_generation(
 
 #-------------read------------------------------------------------------
 
-@app.get("/department/all",response_model = DepartmentResponse)
-def get_all_dept(dept:DepartmentResponse , db : Session = Depends(get_db)):
+@app.get("/department/all",response_model = list[DepartmentResponse])
+def get_all_dept(db : Session = Depends(get_db)):
     return fetch_dept(db)
 
-@app.get("/department/{dept_id}/employees" , response_model = DepartmentResponse)
+@app.get("/department/{dept_id}/employees" , response_model = list[DepartmentResponse])
 def sort_emp_dept_wise(dept_id : str , db : Session = Depends(get_db)):
     return fetch_emp_dept_wise(db , dept_id)
 
-#------------------------------------------------------------------------------
-@app.get("/employee/all" , response_model = EmployeeResponse)
+@app.get("/employee/all" , response_model = list[EmployeeResponse])
 def get_all_emp_details(
-    emp: EmployeeResponse,
     db : Session = Depends(get_db)):
     return get_all_emp(db)
+#------------------------------------------------------------------------------
 
 @app.get("/employee/{emp_id}" , response_model = EmployeeResponse)
 def get_emp_details(
@@ -90,27 +93,27 @@ def get_emp_details(
     db : Session = Depends(get_db)):
     return fetch_emp_details(db , emp_id)
 
-@app.get("/employee/{emp_id}/department", response_model = EmployeeResponse)
+@app.get("/employee/{emp_id}/department", response_model = DepartmentResponse)
 def get_emp_dept(
     emp_id : str,
     db : Session = Depends(get_db)):
     return get_emp_dept_name(db , emp_id)
 
 #---------------------------------------------------------------
-@app.get("/users/me")
+@app.get("/users/me" , response_model= UsersResponse)
 def get_my_info(current_user: Users = Depends(get_current_user)):
-    return{"userid":current_user.userid , "username" : current_user.username}
+    return current_user
+    # return{"userid":current_user.userid , "username" : current_user.username}
 
-@app.get("/users/all" , response_model=UsersResponse)
+@app.get("/users/all" , response_model = list[UsersResponse])
 def get_all_users(
     users = UsersResponse,
     db: Session = Depends(get_db),
     current_user :dict = Depends(verify_admin)):
     return fetch_all_user(db)
 
-
 #-------------update--------------------------------------------------------
-@app.put("/employee/update/{emp_id}")
+@app.put("/employee/update/{emp_id}" , response_model= EmployeeResponse , status_code = 200)
 def update_emp_func(
     emp_id : str, 
     emp : EmployeeSchema, 
