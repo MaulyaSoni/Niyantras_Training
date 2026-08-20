@@ -41,3 +41,11 @@ async def different_id_exception_handler(request : Request , exc : DifferentIDEx
         status_code = 409,
         content = {"message" : f"You can't altered the employee ID"}
     ) 
+
+
+#------------------------logger----------------------------
+
+def update_notification(emp_id:str):
+    return(f"{emp_id}Employee was updated")
+
+#-----------------------------------------------------------
