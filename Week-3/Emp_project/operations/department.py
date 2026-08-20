@@ -66,4 +66,4 @@ def delete_dept(
     db.delete(department)
     db.commit()
     logging.info(f"{dept_id}, department deleted by '{user_log.username}'")
-    return f"{dept_id} , department deleted successfully"
+    return {"message": f"{dept_id} , department deleted successfully"}

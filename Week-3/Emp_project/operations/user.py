@@ -8,7 +8,7 @@ from security.password import generate_hash_password
 from security.user import get_current_user , authenticate_user , create_access_token
 
 logging.basicConfig(
-    filename="./logs/Log_employee_project.log",
+    filename="Log_employee_project.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -74,4 +74,4 @@ def delete_user(
     db.delete(user)
     db.commit()
     logging.info(f"{userid} , user deleted by {user_log.username}")
-    return f"{userid} , deleted successfully"
+    return {"message" : f"{userid} , deleted successfully"}

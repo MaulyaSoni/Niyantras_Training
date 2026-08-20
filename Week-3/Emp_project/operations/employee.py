@@ -153,4 +153,4 @@ def delete_emp(
     db.delete(employee)
     db.commit()
     logging.info(f"{emp_id} , employee deleted by '{user_log.username}'")
-    return f"Employee {emp_id} deleted successfully"
+    return {"message":f"Employee {emp_id} deleted successfully"}

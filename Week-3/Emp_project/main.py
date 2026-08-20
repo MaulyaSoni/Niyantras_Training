@@ -7,6 +7,7 @@ from models.model import Base , Employee , Department, Users
 from schemas.user import UsersSchema , UsersResponse
 from schemas.employee import EmployeeResponse , EmployeeSchema 
 from schemas.department import DepartmentSchema , DepartmentResponse
+from schemas.message import MessageResponse
 from operations.employee import create_emp_data , update_emp , delete_emp
 from operations.employee import get_all_emp , get_emp_dept_name , fetch_emp_details , fetch_emp_dept_wise 
 from operations.department import create_dept_data , fetch_dept , delete_dept
@@ -71,7 +72,7 @@ def get_all_dept(
     user_log : Users = Depends(get_current_user)):
     return fetch_dept(db,user_log)
 
-@app.get("/department/{dept_id}/employees" , response_model = list[DepartmentResponse])
+@app.get("/department/{dept_id}/employees" , response_model = list[EmployeeResponse])
 def sort_emp_dept_wise(
     dept_id : str,
     db : Session = Depends(get_db),
@@ -109,7 +110,6 @@ def get_my_info(
 
 @app.get("/users/all" , response_model = list[UsersResponse])
 def get_all_users(
-    users = UsersResponse,
     db: Session = Depends(get_db),
     current_user :dict = Depends(verify_admin),
     user_log : Users = Depends(get_current_user)):
@@ -129,7 +129,7 @@ def update_emp_func(
 
 #-------------delete-----------------------------------------------------
 
-@app.delete("/employee/delete/{emp_id}")
+@app.delete("/employee/delete/{emp_id}" , response_model = MessageResponse , status_code = 200)
 def delete_emp_func(
     emp_id : str,
     db : Session = Depends(get_db),
@@ -137,7 +137,7 @@ def delete_emp_func(
     current_user : dict = Depends(verify_admin)):
     return delete_emp(db , emp_id , user_log)
 
-@app.delete("/department/delete/{dept_id}")
+@app.delete("/department/delete/{dept_id}" , response_model = MessageResponse , status_code = 200)
 def delete_dept_func(
     dept_id : str,
     db : Session = Depends(get_db),
@@ -145,10 +145,11 @@ def delete_dept_func(
     current_user : dict = Depends(verify_admin)):
     return delete_dept(db , dept_id , user_log)
 
-@app.delete("/users/delete/{userid}")
+@app.delete("/users/delete/{userid}" , response_model = MessageResponse , status_code = 200)
 def delete_user_func(
     userid : str,
     db : Session = Depends(get_db),
     user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
     return delete_user(db , userid , user_log)
+ 
