@@ -2,8 +2,8 @@ import logging
 from fastapi import Depends , HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordRequestForm
-from models import Users
-from security_functions import authenticate_user , create_access_token
+from models.model import Users
+from security.user import authenticate_user , create_access_token
 
 logging.basicConfig(
     filename="Log_employee_project.log",

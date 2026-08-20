@@ -2,10 +2,10 @@ import os
 import logging
 from sqlalchemy.orm import Session
 from fastapi import HTTPException , Depends ,  Request , BackgroundTasks
-from models import Users
-from schema import UsersSchema , UsersResponse
-from hash_methods import generate_hash_password
-from security_functions import get_current_user , authenticate_user , create_access_token
+from models.model import Users
+from schemas.user import UsersSchema , UsersResponse
+from security.password import generate_hash_password
+from security.user import get_current_user , authenticate_user , create_access_token
 
 logging.basicConfig(
     filename="./logs/Log_employee_project.log",
@@ -56,7 +56,7 @@ def create_admin(
 def fetch_all_user(
     db:Session,
     user_log : Users):
-    
+
     logging.info(f"Fetch all users call by '{user_log.username}'")
     return db.query(Users).all()
 

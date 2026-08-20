@@ -3,18 +3,18 @@ from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException , Depends , BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from database import get_db , engine
-from models import Base , Employee , Department, Users
-from schema import EmployeeResponse , EmployeeSchema 
-from schema import DepartmentSchema , DepartmentResponse
-from schema import UsersSchema , UsersResponse
+from models.model import Base , Employee , Department, Users
+from schemas.user import UsersSchema , UsersResponse
+from schemas.employee import EmployeeResponse , EmployeeSchema 
+from schemas.department import DepartmentSchema , DepartmentResponse
 from operations.employee import create_emp_data , update_emp , delete_emp
 from operations.employee import get_all_emp , get_emp_dept_name , fetch_emp_details , fetch_emp_dept_wise 
 from operations.department import create_dept_data , fetch_dept , delete_dept
-from operations.users import create_user , fetch_all_user , delete_user
-from operations.users import create_admin
+from operations.user import create_user , create_admin
+from operations.user import fetch_all_user , delete_user
 from operations.token import create_token
-from dependencies import get_current_user, verify_admin
-from security_functions import authenticate_user , create_access_token
+from dependencies.admin import  verify_admin
+from security.user import authenticate_user , create_access_token , get_current_user
 
 
 app = FastAPI()

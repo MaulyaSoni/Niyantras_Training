@@ -2,12 +2,13 @@ import os
 import logging
 from sqlalchemy.orm import Session
 from fastapi import HTTPException , Depends ,  BackgroundTasks
-from models import Employee , Department , Users
-from schema import EmployeeSchema , EmployeeResponse 
-from schema import DepartmentSchema , DepartmentResponse 
+from models.model import Employee , Department , Users
+from schemas.employee import EmployeeSchema , EmployeeResponse 
+from schemas.department import DepartmentSchema , DepartmentResponse 
 from operations.exceptions import DataCannotInsertException , datacannotinsert_exception_handler
 from operations.exceptions import InvalidEmpIDException , invalid_id_exception_handler 
-from operations.exceptions import DifferentIDException , different_id_exception_handler , update_notification
+from operations.exceptions import DifferentIDException , different_id_exception_handler
+from operations.exceptions import update_notification
 
 logging.basicConfig(
     filename="Log_employee_project.log",
@@ -84,7 +85,7 @@ def fetch_emp_dept_wise(
     department = db.get(Department , dept_id)
     if department is None :
         logging.error(f"{dept_id} not found error in sort (get) emp/dept")
-        raise HTTPException(status_code = 404 , detail = "..Departent does'nt exist..")
+        raise HTTPException(status_code = 404 , detail = "..Department does'nt exist..")
     
     logging.info(f"Sorting method called by '{user_log.username}'")
     return department.employee_object

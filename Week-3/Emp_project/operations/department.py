@@ -2,8 +2,8 @@ import os
 import logging
 from sqlalchemy.orm import Session
 from fastapi import HTTPException , Depends ,  Request , BackgroundTasks
-from models import Department , Users
-from schema import DepartmentSchema , DepartmentResponse 
+from models.model import Users , Department
+from schemas.department import DepartmentSchema , DepartmentResponse 
 from operations.exceptions import DataCannotInsertException , datacannotinsert_exception_handler
 from operations.exceptions import InvalidEmpIDException , invalid_id_exception_handler 
 from operations.exceptions import DifferentIDException , different_id_exception_handler
@@ -57,7 +57,7 @@ def delete_dept(
     department = db.get(Department , dept_id)
     if department is None :
         logging.error(f"{dept_id} not found error in sort (get) emp/dept")
-        raise HTTPException(status_code = 404 , detail = "..Departent does'nt exist..")
+        raise HTTPException(status_code = 404 , detail = "..Department does'nt exist..")
    
     if department.employee_object:
         logging.error(f"trying to delete Department containing emp")

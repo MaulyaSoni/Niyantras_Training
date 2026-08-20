@@ -5,6 +5,7 @@ from database import engine
 class Base(DeclarativeBase):
     pass
 
+
 class Department(Base):
     __tablename__ = "Department_table"
 
@@ -12,6 +13,7 @@ class Department(Base):
     dept_name : Mapped[str] = mapped_column(String(20) , nullable = False)
 
     employee_object = relationship("Employee" , back_populates = "department_object")
+
 
 class Employee(Base):
     __tablename__ = "Employee_table"
