@@ -48,23 +48,20 @@ def create_dept(
 @app.post("/register" , response_model = UsersResponse , status_code=201)
 def register_user(
     user_data: UsersSchema,
-    db: Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user)):
-    return create_user(db , user_data , user_log)
+    db: Session = Depends(get_db)):
+    return create_user(db , user_data)
 
 @app.post("/admin" , response_model = UsersResponse , status_code = 201)
 def register_admin(
     user_data: UsersSchema,
-    db: Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user)):
-    return create_admin(db , user_data , user_log)
+    db: Session = Depends(get_db)):
+    return create_admin(db , user_data)
 
 @app.post("/token")
 def token_generation(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user)):
-    return create_token(db , form_data , user_log)
+    db: Session = Depends(get_db)):
+    return create_token(db , form_data)
 
 #-------------read------------------------------------------------------
 
@@ -107,8 +104,7 @@ def get_emp_dept(
 
 @app.get("/users/me" , response_model= UsersResponse)
 def get_my_info(
-    current_user: Users = Depends(get_current_user),
-    user_log : Users = Depends(get_current_user)):
+    current_user: Users = Depends(get_current_user)):
     return current_user
 
 @app.get("/users/all" , response_model = list[UsersResponse])
@@ -117,7 +113,7 @@ def get_all_users(
     db: Session = Depends(get_db),
     current_user :dict = Depends(verify_admin),
     user_log : Users = Depends(get_current_user)):
-    return fetch_all_user(db)
+    return fetch_all_user(db ,user_log)
 
 #-------------update--------------------------------------------------------
 

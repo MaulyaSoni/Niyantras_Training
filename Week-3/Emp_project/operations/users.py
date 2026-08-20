@@ -8,7 +8,7 @@ from hash_methods import generate_hash_password
 from security_functions import get_current_user , authenticate_user , create_access_token
 
 logging.basicConfig(
-    filename="Log_employee_project.log",
+    filename="./logs/Log_employee_project.log",
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
@@ -17,8 +17,7 @@ logging.basicConfig(
 
 def create_user(
     db: Session,
-    user_data: UsersSchema,
-    user_log : Users):
+    user_data: UsersSchema):
 
     existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
 
@@ -35,7 +34,7 @@ def create_user(
     db.commit()
     db.refresh(new_user)
 
-    logging.info(f"{user_data.username} New User created by {user_log.username}")
+    logging.info(f"{user_data.username} New User created")
     return new_user
 
 def create_admin(
@@ -49,19 +48,24 @@ def create_admin(
     )
     db.add(new_user)
     db.commit()
-    logging.info(f"New admin : {user_data.username} created by {user_log.username}")
+    logging.info(f"New admin : {user_data.username} created")
     return new_user
 
 #----------------------------------------------------------
 
-def fetch_all_user(db:Session):
+def fetch_all_user(
+    db:Session,
+    user_log : Users):
+    
+    logging.info(f"Fetch all users call by '{user_log.username}'")
     return db.query(Users).all()
 
 #----------------------------------------------------------
 
 def delete_user(
     db: Session,
-    userid : str):
+    userid : str,
+    user_log : Users):
     
     user = db.get(Users , userid)
     if user is None:

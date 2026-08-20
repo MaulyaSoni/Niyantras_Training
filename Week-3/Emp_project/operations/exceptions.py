@@ -1,14 +1,6 @@
-import logging
-from fastapi import HTTPException , Depends , Request
-from sqlalchemy.orm import Session
+from fastapi import HTTPException , Request
 from fastapi.security import OAuth2PasswordRequestForm , OAuth2PasswordBearer
 from fastapi.responses import JSONResponse
-
-logging.basicConfig(
-    filename="Log_employee_project.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 
 #--------------------Custom Exception Classes-----------------------------
 
