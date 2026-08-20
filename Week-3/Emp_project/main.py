@@ -55,8 +55,9 @@ def register_user(
 @app.post("/admin" , response_model = UsersResponse , status_code = 201)
 def register_admin(
     user_data: UsersSchema,
+    admin_key = str,
     db: Session = Depends(get_db)):
-    return create_admin(db , user_data)
+    return create_admin(db ,user_data , admin_key)
 
 @app.post("/token")
 def token_generation(

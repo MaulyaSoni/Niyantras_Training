@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 import logging
 from sqlalchemy.orm import Session
 from fastapi import HTTPException , Depends ,  Request , BackgroundTasks
@@ -6,6 +7,8 @@ from models.model import Users
 from schemas.user import UsersSchema , UsersResponse
 from security.password import generate_hash_password
 from security.user import get_current_user , authenticate_user , create_access_token
+load_dotenv()
+ADMIN_KEY = os.getenv("ADMIN_KEY")
 
 logging.basicConfig(
     filename="Log_employee_project.log",
@@ -39,7 +42,16 @@ def create_user(
 
 def create_admin(
     db:Session,
-    user_data : UsersSchema):
+    user_data : UsersSchema,
+    admin_key : str
+    ):
+
+    if admin_key != ADMIN_KEY:
+        raise HTTPException(status_code = 403 , detail="You don't have valid ADMIN KEY to create admin")
+    
+    existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
+    if existing_user:
+        raise HTTPException(status_code = 409 , detail = "Admin already exists")
 
     new_user = Users(
         username=user_data.username,

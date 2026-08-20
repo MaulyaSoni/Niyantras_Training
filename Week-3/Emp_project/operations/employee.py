@@ -10,6 +10,10 @@ from operations.exceptions import InvalidEmpIDException , invalid_id_exception_h
 from operations.exceptions import DifferentIDException , different_id_exception_handler
 from operations.exceptions import update_notification
 
+import structlog
+
+logger = structlog.get_logger()
+
 logging.basicConfig(
     filename="Log_employee_project.log",
     level=logging.INFO,
