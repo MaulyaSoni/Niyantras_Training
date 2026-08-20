@@ -92,14 +92,14 @@ def get_emp_details(
     emp_id : str,
     db : Session = Depends(get_db),
     user_log : Users = Depends(get_current_user)):
-    return fetch_emp_details(db , emp_id)
+    return fetch_emp_details(db , emp_id ,user_log)
 
 @app.get("/employee/{emp_id}/department", response_model = DepartmentResponse)
 def get_emp_dept(
     emp_id : str,
     db : Session = Depends(get_db),
     user_log : Users = Depends(get_current_user)):
-    return get_emp_dept_name(db , emp_id)
+    return get_emp_dept_name(db , emp_id , user_log)
 
 #---------------------------------------------------------------
 

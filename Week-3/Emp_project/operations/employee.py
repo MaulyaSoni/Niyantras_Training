@@ -130,6 +130,8 @@ def update_emp(
 
     employee.name = emp.name
     employee.age = emp.age
+    employee.dept_id=emp.dept_id
+    Department.dept_id = employee.dept_id
     db.commit()
     db.refresh(employee)
 
