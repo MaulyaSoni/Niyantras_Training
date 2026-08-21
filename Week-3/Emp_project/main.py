@@ -10,7 +10,7 @@ from schemas.department import DepartmentSchema , DepartmentResponse
 from schemas.message import MessageResponse
 from operations.employee import create_emp_data , update_emp , delete_emp
 from operations.employee import get_all_emp , get_emp_dept_name , fetch_emp_details , fetch_emp_dept_wise 
-from operations.department import create_dept_data , fetch_dept , delete_dept
+from operations.department import create_dept , fetch_dept , delete_dept
 from operations.user import create_user , create_admin
 from operations.user import fetch_all_user , delete_user
 from operations.token import create_token
@@ -43,7 +43,7 @@ def create_dept(
     db : Session = Depends(get_db),
     user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)): 
-    return create_dept_data(db , dept , user_log)
+    return create_dept(db , dept , user_log)
 
 #-----------------------------------------User perspective --------------------------------------
 @app.post("/register" , response_model = UsersResponse , status_code=201)
@@ -153,4 +153,6 @@ def delete_user_func(
     user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)):
     return delete_user(db , userid , user_log)
+ 
+
  

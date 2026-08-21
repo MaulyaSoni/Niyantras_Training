@@ -16,7 +16,7 @@ logging.basicConfig(
 
 #----------------------------------------------------------
 
-def create_dept_data(
+def create_dept(
     db : Session,
     dept : DepartmentSchema,
     user_log : Users):
