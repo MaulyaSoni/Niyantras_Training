@@ -1,7 +1,7 @@
 from pydantic import BaseModel ,Field , ConfigDict 
 
 class DepartmentSchema(BaseModel):
-    dept_id : str = Field(min_length = 4)
+    # dept_id : str = Field(min_length = 4)
     dept_name : str = Field(min_length = 1)
 
 class DepartmentResponse(BaseModel):

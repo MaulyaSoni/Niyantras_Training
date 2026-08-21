@@ -46,7 +46,7 @@ def validate_row(row):
     if quantity <= 0:
         raise NullQuantityException(f"Quantity can't be null or negative ,  value of quantity : {quantity}")
 
-def load_data(file_name):
+def load_data(file_name)->list : None :
     data_list = []
     with open(file_name,"r") as file:
         reader = csv.reader(file)

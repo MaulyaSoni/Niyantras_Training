@@ -41,9 +41,9 @@ def create_emp(
 def create_dept(
     dept : DepartmentSchema,
     db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user),
+    # user_log : Users = Depends(get_current_user),
     current_user : dict = Depends(verify_admin)): 
-    return create_dept(db , dept , user_log)
+    return create_dept(db , dept )
 
 #-----------------------------------------User perspective --------------------------------------
 @app.post("/register" , response_model = UsersResponse , status_code=201)

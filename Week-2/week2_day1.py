@@ -58,4 +58,4 @@ for emp in employee_data_list:
 
 print("\nNumber of Employees by Performance Score")
 for score, names in performance.items():
-    print(f"Performance_score {score}: {len(names)} employees")
+    print(f"Performance_score {score}: {len(names)} employees , {type(names)}")

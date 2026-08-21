@@ -24,10 +24,11 @@ logging.basicConfig(
 
 def create_emp_data(
     db : Session,
-    emp : EmployeeSchema,
+    emp : EmployeeResponse,
     user_log : Users):
 
-    existing_emp = db.get(Employee ,emp.e_id)
+
+    existing_emp = db.get(Employee ,emp.name)
     department = db.get(Department ,emp.dept_id)
     if department is None :
         raise HTTPException(status_code=404,detail = "Department not exists...")
@@ -41,16 +42,15 @@ def create_emp_data(
     except DataCannotInsertException as e:
         raise HTTPException(status_code=409,detail="Duplicate Data can't be inserted ")    
     
-    try:
-        if(res := emp.e_id[0:3]) != "emp":
-            logging.warning(f"ID not match with prefix ")
-            raise InvalidEmpIDException()
+    # try:
+    #     if(res := emp.e_id[0:3]) != "emp":
+    #         logging.warning(f"ID not match with prefix ")
+    #         raise InvalidEmpIDException()
 
-    except InvalidEmpIDException as e: 
-        raise HTTPException(status_code = 401 , detail = "Invalid ID syntax , make sure it matches with company's id")
+    # except InvalidEmpIDException as e: 
+    #     raise HTTPException(status_code = 401 , detail = "Invalid ID syntax , make sure it matches with company's id")
 
     employee = Employee(
-        e_id = emp.e_id,
         name = emp.name,
         age = emp.age,
         dept_id = emp.dept_id

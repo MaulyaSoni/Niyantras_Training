@@ -21,21 +21,22 @@ def create_dept(
     dept : DepartmentSchema,
     user_log : Users):
 
-    department_check = db.get(Department , dept.dept_id)
+    # department_check = db.get(Department , dept.dept_id)
     
-    try:
-        if department_check:
-            logging.warning("Duplicate Department Data insertion")
-            raise DataCannotInsertException(condition = department_check)
-            # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
+    # try:
+    #     if department_check:
+    #         logging.warning("Duplicate Department Data insertion")
+    #         raise DataCannotInsertException(condition = department_check)
+    #         # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
     
-    except DataCannotInsertException as e:
-        raise HTTPException(status_code=409,detail="Duplicate Department Data can't be inserted ")    
-    
-    department = Department(dept_id = dept.dept_id , dept_name = dept.dept_name)
+    # except DataCannotInsertException as e:
+    #     raise HTTPException(status_code=409,detail="Duplicate Department Data can't be inserted ")    
+    # dept_id = dept.dept_id , 
+     
+    department = Department(dept_name = dept.dept_name)
     db.add(department)
     db.commit()
-    logging.info(f"{dept.dept_id} , New Department created by '{user_log.username}'")
+    # logging.info(f"{dept.dept_id} , New Department created by '{user_log.username}'")
     return department
 
 #----------------------------------------------------------

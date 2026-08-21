@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 class Department(Base):
     __tablename__ = "Department_table"
 
-    dept_id : Mapped[str] = mapped_column(String(20) , primary_key = True)
+    dept_id : Mapped[int] = mapped_column(Integer , primary_key = True ,autoincrement = True)
     dept_name : Mapped[str] = mapped_column(String(20) , nullable = False)
 
     employee_object = relationship("Employee" , back_populates = "department_object")
@@ -18,7 +18,7 @@ class Department(Base):
 class Employee(Base):
     __tablename__ = "Employee_table"
     
-    e_id : Mapped[str] = mapped_column(String(20) , primary_key = True)
+    e_id : Mapped[int] = mapped_column(Integer , primary_key = True ,autoincrement = True)
     name : Mapped[str] = mapped_column(String(20) , nullable = False)
     age : Mapped[int] = mapped_column(Integer , nullable = False)
 

@@ -43,7 +43,7 @@ try:
                 logging.error(f"Failed to process row: {row} | Error: {e}")
                 
 
-except OSException as error:
+except (OSException,Exception) as error:
     print(error)
 
 else:
