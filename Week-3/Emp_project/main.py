@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, HTTPException , Depends , BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
-from database import get_db , engine
+from database.db import get_db , engine
 from models.model import Base , Employee , Department, Users
 from schemas.user import UsersSchema , UsersResponse
 from schemas.employee import EmployeeResponse , EmployeeSchema 

@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine ,Column , Integer , String , ForeignKey
 from sqlalchemy.orm import Mapped , mapped_column , DeclarativeBase , relationship
-from database import engine
+from database.db import engine
 
 class Base(DeclarativeBase):
     pass

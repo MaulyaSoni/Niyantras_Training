@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from datetime import datetime , timedelta , timezone
-from database import get_db
+from database.db import get_db
 from models.model import Users
 from security.password import verify_hash_password
 
