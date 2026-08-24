@@ -16,23 +16,24 @@ logging.basicConfig(
 
 #----------------------------------------------------------
 
-def create_dept(
+def create_dept_data(
     db : Session,
     dept : DepartmentSchema,
-    user_log : Users):
+    # user_log : Users
+    ):
 
-    # department_check = db.get(Department , dept.dept_id)
+    # existing_dept = db.get(Department , dept.dept_name)
+    existing_dept = (db.query(Department).filter(Department.dept_name == dept.dept_name).first())
+
+    try:
+        if existing_dept:
+            logging.warning("Duplicate Department Data insertion")
+            raise DataCannotInsertException(condition = existing_dept)
+            # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
     
-    # try:
-    #     if department_check:
-    #         logging.warning("Duplicate Department Data insertion")
-    #         raise DataCannotInsertException(condition = department_check)
-    #         # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
-    
-    # except DataCannotInsertException as e:
-    #     raise HTTPException(status_code=409,detail="Duplicate Department Data can't be inserted ")    
-    # dept_id = dept.dept_id , 
-     
+    except DataCannotInsertException as e:
+        raise HTTPException(status_code=409,detail="Duplicate Department Data can't be inserted ")    
+
     department = Department(dept_name = dept.dept_name)
     db.add(department)
     db.commit()

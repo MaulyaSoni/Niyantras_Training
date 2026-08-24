@@ -50,7 +50,7 @@ def create_admin(
         raise HTTPException(status_code = 403 , detail="You don't have valid ADMIN KEY to create admin")
     
     existing_user = (db.query(Users).filter(Users.username == user_data.username).first())
-    if existing_user:
+    if existing_user and existing_user.user_role == 'Admin':
         raise HTTPException(status_code = 409 , detail = "Admin already exists")
 
     new_user = Users(
@@ -69,7 +69,7 @@ def fetch_all_user(
     db:Session,
     user_log : Users):
 
-    logging.info(f"Fetch all users call by '{user_log.username}'")
+    # logging.info(f"Fetch all users call by '{user_log.username}'")
     return db.query(Users).all()
 
 #----------------------------------------------------------
@@ -77,7 +77,7 @@ def fetch_all_user(
 def delete_user(
     db: Session,
     userid : str,
-    user_log : Users):
+    current_user : Users):
     
     user = db.get(Users , userid)
     if user is None:
@@ -85,5 +85,5 @@ def delete_user(
     
     db.delete(user)
     db.commit()
-    logging.info(f"{userid} , user deleted by {user_log.username}")
+    logging.info(f"{userid} , user deleted by {current_user.username}")
     return {"message" : f"{userid} , deleted successfully"}

@@ -24,17 +24,24 @@ logging.basicConfig(
 
 def create_emp_data(
     db : Session,
-    emp : EmployeeResponse,
-    user_log : Users):
+    emp : EmployeeSchema,
+    # user_log : Users
+    ):
 
+    # existing_dept = (db.query(Department).filter(Department.dept_name == emp.dept_id).first())
+    # existing_emp = db.get(Employee ,emp.name)
+    # department = db.get(Department ,emp.dept_id)
 
-    existing_emp = db.get(Employee ,emp.name)
-    department = db.get(Department ,emp.dept_id)
+    existing_emp = (db.query(Employee).filter(Employee.name == emp.name).first())
+    department = db.get(Department ,emp.dept_name)
+    
     if department is None :
         raise HTTPException(status_code=404,detail = "Department not exists...")
     
     try:
         if existing_emp:
+
+
             logging.warning(f"Duplicate Employee data insertion error")
             raise DataCannotInsertException(condition = existing_emp)
             # raise HTTPException(status_code = 400 , detail = "!!Department already created ")
@@ -42,22 +49,15 @@ def create_emp_data(
     except DataCannotInsertException as e:
         raise HTTPException(status_code=409,detail="Duplicate Data can't be inserted ")    
     
-    # try:
-    #     if(res := emp.e_id[0:3]) != "emp":
-    #         logging.warning(f"ID not match with prefix ")
-    #         raise InvalidEmpIDException()
-
-    # except InvalidEmpIDException as e: 
-    #     raise HTTPException(status_code = 401 , detail = "Invalid ID syntax , make sure it matches with company's id")
-
+    # print(existing_emp.name , department.dept_name)
     employee = Employee(
         name = emp.name,
         age = emp.age,
-        dept_id = emp.dept_id
+        dept_name = emp.dept_name
     )
     db.add(employee)
     db.commit()
-    logging.info(f"{emp.e_id} , New employee created by '{user_log.username}'")
+    # logging.info(f"{emp.name} , New employee created by '{user_log.username}'")
     return employee
 
 #----------------------------------------------------------
@@ -124,18 +124,18 @@ def update_emp(
         logging.warning(f"{emp_id} , employee not found while updating ")
         raise HTTPException(status_code = 404 , detail = "User not found for updating the data")
     
-    try:
-        if employee.e_id != emp.e_id:
-            logging.warning("ID altering in update_emp function")
-            raise DifferentIDException(employee.e_id,emp.e_id)
+    # try:
+    #     if employee.e_id != emp.e_id:
+    #         logging.warning("ID altering in update_emp function")
+    #         raise DifferentIDException(employee.e_id,emp.e_id)
 
-    except DifferentIDException as e:
-        raise HTTPException(status_code = 409 , detail =" Employee ID can't change during details updatation")
+    # except DifferentIDException as e:
+    #     raise HTTPException(status_code = 409 , detail =" Employee ID can't change during details updatation")
 
     employee.name = emp.name
     employee.age = emp.age
-    employee.dept_id=emp.dept_id
-    Department.dept_id = employee.dept_id
+    employee.dept_name=emp.dept_name
+    Department.dept_name = employee.dept_name
     db.commit()
     db.refresh(employee)
 

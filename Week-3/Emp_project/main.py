@@ -10,11 +10,12 @@ from schemas.department import DepartmentSchema , DepartmentResponse
 from schemas.message import MessageResponse
 from operations.employee import create_emp_data , update_emp , delete_emp
 from operations.employee import get_all_emp , get_emp_dept_name , fetch_emp_details , fetch_emp_dept_wise 
-from operations.department import create_dept , fetch_dept , delete_dept
+from operations.department import create_dept_data , fetch_dept , delete_dept
 from operations.user import create_user , create_admin
 from operations.user import fetch_all_user , delete_user
 from operations.token import create_token
 from dependencies.admin import  verify_admin
+from dependencies.context import get_admin_context
 from security.user import authenticate_user , create_access_token , get_current_user
 
 
@@ -32,18 +33,22 @@ def create_tables():
 @app.post("/employee", response_model = EmployeeResponse , status_code = 201)
 def create_emp(
     emp : EmployeeSchema,
-    db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user),
-    current_user : dict = Depends(verify_admin)):
-    return create_emp_data(db , emp , user_log)
+    # db : Session = Depends(get_db),
+    # # user_log : Users = Depends(get_current_user),
+    # current_user : dict = Depends(verify_admin)
+    context = Depends(get_admin_context)):
+    return create_emp_data(context["db"] , emp )
 
 @app.post("/department" , response_model = DepartmentResponse , status_code = 201)
 def create_dept(
     dept : DepartmentSchema,
-    db : Session = Depends(get_db),
+    context = Depends(get_admin_context)
+    # db : Session = Depends(get_db),
     # user_log : Users = Depends(get_current_user),
-    current_user : dict = Depends(verify_admin)): 
-    return create_dept(db , dept )
+    # current_user : dict = Depends(verify_admin)
+    ): 
+
+    return create_dept_data(context["db"]  ,dept )
 
 #-----------------------------------------User perspective --------------------------------------
 @app.post("/register" , response_model = UsersResponse , status_code=201)
@@ -67,11 +72,30 @@ def token_generation(
 
 #-------------read------------------------------------------------------
 
+
 @app.get("/department/all",response_model = list[DepartmentResponse])
 def get_all_dept(
-    db : Session = Depends(get_db), 
-    user_log : Users = Depends(get_current_user)):
-    return fetch_dept(db,user_log)
+    context = Depends(get_admin_context)):
+    # db : Session = Depends(get_db), 
+    # user_log : Users = Depends(get_current_user)):
+    return fetch_dept(context["db"] , context["current_user"])
+
+@app.get("/employee/all" , response_model = list[EmployeeResponse])
+def get_all_emp_details(
+    context = Depends(get_admin_context)):
+    # db : Session = Depends(get_db),
+    # user_log : Users = Depends(get_current_user)):
+    return get_all_emp(context["db"] , context["current_user"])
+
+@app.get("/users/all" , response_model = list[UsersResponse])
+def get_all_users(
+    # db: Session = Depends(get_db),
+    # current_user :dict = Depends(verify_admin),
+    context = Depends(get_admin_context)):
+    # user_log : Users = Depends(get_current_user)):
+    return fetch_all_user(context["db"],context["current_user"])
+
+#------------------------------------------------------------------------------
 
 @app.get("/department/{dept_id}/employees" , response_model = list[EmployeeResponse])
 def sort_emp_dept_wise(
@@ -79,14 +103,6 @@ def sort_emp_dept_wise(
     db : Session = Depends(get_db),
     user_log : Users = Depends(get_current_user)):
     return fetch_emp_dept_wise(db , dept_id)
-
-@app.get("/employee/all" , response_model = list[EmployeeResponse])
-def get_all_emp_details(
-    db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user)):
-    return get_all_emp(db , user_log)
-
-#------------------------------------------------------------------------------
 
 @app.get("/employee/{emp_id}" , response_model = EmployeeResponse)
 def get_emp_details(
@@ -109,12 +125,6 @@ def get_my_info(
     current_user: Users = Depends(get_current_user)):
     return current_user
 
-@app.get("/users/all" , response_model = list[UsersResponse])
-def get_all_users(
-    db: Session = Depends(get_db),
-    current_user :dict = Depends(verify_admin),
-    user_log : Users = Depends(get_current_user)):
-    return fetch_all_user(db ,user_log)
 
 #-------------update--------------------------------------------------------
 
@@ -122,37 +132,35 @@ def get_all_users(
 def update_emp_func(
     emp_id : str, 
     emp : EmployeeSchema, 
-    background_tasks : BackgroundTasks, 
-    db : Session = Depends(get_db),
-    current_user : dict = Depends(verify_admin),
-    user_log : Users = Depends(get_current_user)):
-    return update_emp(db , emp_id , emp , background_tasks , user_log)
+    background_tasks : BackgroundTasks,
+    context = Depends(get_admin_context)):
+    # db : Session = Depends(get_db),
+    # current_user : dict = Depends(verify_admin),
+    # user_log : Users = Depends(get_current_user)):
+    return update_emp(context["db"] , emp_id , emp , background_tasks , context["current_user"])
 
 #-------------delete-----------------------------------------------------
 
 @app.delete("/employee/delete/{emp_id}" , response_model = MessageResponse , status_code = 200)
 def delete_emp_func(
     emp_id : str,
-    db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user),
-    current_user : dict = Depends(verify_admin)):
-    return delete_emp(db , emp_id , user_log)
+    context = Depends(get_admin_context)):
+    return delete_emp(context["db"] , emp_id , context["current_user"])
 
 @app.delete("/department/delete/{dept_id}" , response_model = MessageResponse , status_code = 200)
 def delete_dept_func(
     dept_id : str,
-    db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user),
-    current_user : dict = Depends(verify_admin)):
-    return delete_dept(db , dept_id , user_log)
+    context = Depends(get_admin_context)):
+    return delete_dept(context["db"] , dept_id , context["current_user"])
 
 @app.delete("/users/delete/{userid}" , response_model = MessageResponse , status_code = 200)
 def delete_user_func(
     userid : str,
-    db : Session = Depends(get_db),
-    user_log : Users = Depends(get_current_user),
-    current_user : dict = Depends(verify_admin)):
-    return delete_user(db , userid , user_log)
+    context = Depends(get_admin_context)):
+    # db : Session = Depends(get_db),
+    # user_log : Users = Depends(get_current_user),
+    # current_user : dict = Depends(verify_admin)):
+    return delete_user(context["db"] , userid , context["current_user"])
  
 
  
