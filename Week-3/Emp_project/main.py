@@ -37,7 +37,7 @@ def create_emp(
     # # user_log : Users = Depends(get_current_user),
     # current_user : dict = Depends(verify_admin)
     context = Depends(get_admin_context)):
-    return create_emp_data(context["db"] , emp )
+    return create_emp_data(context["db"] , emp  , context["current_user"])
 
 @app.post("/department" , response_model = DepartmentResponse , status_code = 201)
 def create_dept(

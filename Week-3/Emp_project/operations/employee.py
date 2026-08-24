@@ -10,9 +10,9 @@ from operations.exceptions import InvalidEmpIDException , invalid_id_exception_h
 from operations.exceptions import DifferentIDException , different_id_exception_handler
 from operations.exceptions import update_notification
 
-import structlog
+# import structlog
 
-logger = structlog.get_logger()
+# logger = structlog.get_logger()
 
 logging.basicConfig(
     filename="Log_employee_project.log",
@@ -25,7 +25,7 @@ logging.basicConfig(
 def create_emp_data(
     db : Session,
     emp : EmployeeSchema,
-    # user_log : Users
+    user_log : Users
     ):
 
     # existing_dept = (db.query(Department).filter(Department.dept_name == emp.dept_id).first())
@@ -40,7 +40,6 @@ def create_emp_data(
     
     try:
         if existing_emp:
-
 
             logging.warning(f"Duplicate Employee data insertion error")
             raise DataCannotInsertException(condition = existing_emp)
@@ -57,7 +56,7 @@ def create_emp_data(
     )
     db.add(employee)
     db.commit()
-    # logging.info(f"{emp.name} , New employee created by '{user_log.username}'")
+    logging.info(f"{emp.name} , New employee created by '{user_log.username}'")
     return employee
 
 #----------------------------------------------------------
