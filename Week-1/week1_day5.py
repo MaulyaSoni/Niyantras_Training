@@ -1,14 +1,7 @@
 from abc import ABC  , abstractmethod
 from dataclasses import dataclass
 from week1_day1_grade_calc import get_int_input , grade_func
-
-
-def get_int(prompt, error_message):
-    while True:
-        try:
-            return int(input(prompt))
-        except ValueError:
-            print(error_message)
+from week1_day4 import get_int  
 
 @dataclass
 class StudentDetails():
@@ -87,8 +80,7 @@ class Result:
     def res_func(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
-if __name__ == "__main__":
-# main part 
+def main():
     flag = True 
     
     s_id = input("\nEnter the ID of the student : ")
@@ -111,3 +103,8 @@ if __name__ == "__main__":
 
     else:
         print("Name can't be contain any numbers or Subjects can't be less than Zero or can't be Negative")
+
+
+if __name__ == "__main__":
+    main() 
+   

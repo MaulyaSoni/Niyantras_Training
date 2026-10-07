@@ -24,8 +24,7 @@ def grade_func(avg):
         grade = 'D'    
     return grade
 
-if __name__ == "__main__" :
-
+def main():
     print("Welcome to the Grade Calculator Application Tool (CLI MODE)")
     grade_dict = {}
     student = {}
@@ -61,3 +60,6 @@ if __name__ == "__main__" :
 
         print(f"\nDetails of student : {id_no} {name} \nTotal Score : ({total}/{n*100}) \nAverage marks : {round(avg,3)} \nGrade : {grade}\n")
         
+if __name__ == "__main__" :
+    main()
+   

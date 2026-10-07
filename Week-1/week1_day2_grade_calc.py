@@ -70,8 +70,9 @@ def cls_outer(grade_dict):
 def details(*args, **kwargs):
     print(f"\nDetails of student : {id_no} {name} \nTotal Score : ({Total}/{n*100}) \nAverage marks : {Avg} \nGrade : {gr}\n")
 
-if __name__ == "__main__":
-    
+
+def main():
+      
     print("\nWelcome to the Grade Calculator Application Tool (CLI MODE)")
  
     id_no = input("\nEnter your id :")
@@ -101,3 +102,7 @@ if __name__ == "__main__":
             # DETAILS func using the Arbitary arguments and Keyword arbitary arguments
             
             details(Avg , Total ,gr, student_id = id_no, name = name)
+
+            
+if __name__ == "__main__":
+    main()

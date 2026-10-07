@@ -90,43 +90,50 @@ class Bill:
     That makes your Payable Amount = {disc_total}
         """)
 
-# Customer Class instance 
-cust_obj = Customer(123 , "Madhav")
-customer_id , customer_name = cust_obj.customer_details()
+def main():
+    # Customer Class instance 
+    cust_obj = Customer(123 , "Madhav")
+    customer_id , customer_name = cust_obj.customer_details()
 
-print("""
-....Welcome to SCM (Shopping Cart Management) System (CLI MODE)....
+    print("""
+    ....Welcome to SCM (Shopping Cart Management) System (CLI MODE)....
 
-=> ...Fill the below fields to generate the BILL... <=
-""")
+    => ...Fill the below fields to generate the BILL... <=
+    """)
 
-n = get_int_input("Enter the number of items : ", "Please enter a whole number for the number of items.")
+    n = get_int_input("Enter the number of items : ", "Please enter a whole number for the number of items.")
 
-if n > 0:
-    gst = get_int_input("Enter the rate of gst (withuot '%' sign) : ", "Please enter a whole number for GST.")
-    # Calculation class instance 
-    cal_obj = Calculations(gst, n)
-    total , gst_total , item_dict = cal_obj.calc_total()
+    if n > 0:
+        gst = get_int_input("Enter the rate of gst (withuot '%' sign) : ", "Please enter a whole number for GST.")
+        # Calculation class instance 
+        cal_obj = Calculations(gst, n)
+        total , gst_total , item_dict = cal_obj.calc_total()
+        
+        
+        while True:
+            discount = get_int_input("""
+    => Before Generating bill , 
+
+    If you wish then enter the rate of discount you want to give to the customer (withuot '%' sign) 
+        or else write 0 : """, "Please enter a whole number for discount.")
+        
+            if 0 <= discount <= 100:
+
+                d_total = Discount(gst_total)
+                disc_total = d_total.calc_discount(discount)
+
+                bill_obj = Bill()
+                bill = bill_obj.bill_func(customer_name , customer_id , item_dict , n , total , gst , gst_total , discount , disc_total)
+
+                break
+
+            else:
+                print("!!Invalid input!! , Discount can't be less than 0 or more than 100..")
     
-    
-    while True:
-        discount = get_int_input("""
-=> Before Generating bill , 
+    else:
+        print("!!Invalid Input!!, Bill should contains atleast one item...")
 
-If you wish then enter the rate of discount you want to give to the customer (withuot '%' sign) 
-    or else write 0 : """, "Please enter a whole number for discount.")
-        if 0 <= discount <= 100:
 
-            d_total = Discount(gst_total)
-            disc_total = d_total.calc_discount(discount)
 
-            bill_obj = Bill()
-            bill = bill_obj.bill_func(customer_name , customer_id , item_dict , n , total , gst , gst_total , discount , disc_total)
-
-            break
-
-        else:
-            print("!!Invalid input!! , Discount can't be less than 0 or more than 100..")
-   
-else:
-    print("!!Invalid Input!!, Bill should contains atleast one item...")
+if __name__ == "__main__":
+    main()

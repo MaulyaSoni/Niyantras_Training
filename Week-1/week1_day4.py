@@ -12,6 +12,7 @@ def get_int(prompt, error_message):
 class StudentDetails:
     def __init__(self):
         print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
+
     def card(self):
         s_id = input("\nEnter the ID of the student : ")
         std_name = input("Enter the Name of the Student : ")
@@ -52,7 +53,7 @@ class MarksDetails(Student):
 
 # Composite Class 2
 class Calculations:
-    def __init__(self):
+    def __init__(self,det = None):
         #object of MarksDetails class
         self.det = MarksDetails()
         print("Details class object created")
@@ -74,7 +75,7 @@ class Rank:
     def __init__(self):
         print("Rank class object created")
 
-    def grade_func(self, avg):
+    def grade_function(self, avg):
         grade =''
         self.avg = avg
         return grade_func(self.avg)
@@ -88,10 +89,12 @@ class Result:
         self.grade  = grade
         self.t_marks = t_marks
         self.n = n           
+
     def __str__(self):
         return f"\n Details of student : \n Student ID : {self.s_id}\n Student Name : {self.name}  \n Total Marks :{self.t_marks}/{self.n*100} \n Average marks : {self.avg} \n Grade : {self.grade}\n"
 
-if __name__ == "__main__":
+
+def main():
 
     flag = True 
     if std_name.replace(" ", "").isalpha():
@@ -102,7 +105,7 @@ if __name__ == "__main__":
             t_marks , avg = cal_obj.avg(n)
 
             rnk= Rank()
-            gr = rnk.grade_func(avg)
+            gr = rnk.grade_function(avg)
 
             res = Result(s_id,std_name,avg,gr,t_marks,n)
             print(res)
@@ -111,6 +114,10 @@ if __name__ == "__main__":
     else:
         print("Name can't be contain any numbers")
 
+
+if __name__ == "__main__":
+    main()
+    
 
 # Note :
 # Why choose the Composition over the Inheritance ?

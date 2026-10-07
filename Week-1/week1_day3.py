@@ -75,8 +75,8 @@ class Rank:
         self.avg = avg
         return grade_func(self.avg)
 
-if __name__ == "__main__":
-    
+def main():
+       
     print("\n...Welcome to the Grade Calculator Application Tool (CLI MODE)...")
     
     S_id = input("\nEnter the ID of the student : ")
@@ -85,7 +85,7 @@ if __name__ == "__main__":
     if std_name.replace(" ", "").isalpha():
         n = get_int_input("\nEnter the number of Subjects : ", "Please enter a whole number for the number of subjects.")
         if n>0:
-            subj_obj= Subject(n)
+            # subj_obj= Subject(n)
 
             det = Details()
             detail_dict = det.data(n)
@@ -96,9 +96,14 @@ if __name__ == "__main__":
             rnk = Rank()
             grade = rnk.grade_function(average_func)
 
-            stu = Student(S_id , std_name ,total ,average_func , grade,n)
+            stu = Student(S_id , std_name ,total ,average_func , grade,n)   
             print(stu.res())
         else:
             print("Subjects can't be less than Zero or Negative ")
     else:
         print("Name can't be contain any numbers")
+
+
+
+if __name__ == "__main__":
+    main() 
