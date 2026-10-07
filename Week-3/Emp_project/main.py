@@ -33,19 +33,15 @@ def create_tables():
 @app.post("/employee", response_model = EmployeeResponse , status_code = 201)
 def create_emp(
     emp : EmployeeSchema,
-    # db : Session = Depends(get_db),
-    # # user_log : Users = Depends(get_current_user),
-    # current_user : dict = Depends(verify_admin)
     context = Depends(get_admin_context)):
+    
     return create_emp_data(context["db"] , emp  , context["current_user"])
 
 @app.post("/department" , response_model = DepartmentResponse , status_code = 201)
 def create_dept(
     dept : DepartmentSchema,
     context = Depends(get_admin_context)
-    # db : Session = Depends(get_db),
-    # user_log : Users = Depends(get_current_user),
-    # current_user : dict = Depends(verify_admin)
+
     ): 
 
     return create_dept_data(context["db"]  ,dept )
@@ -76,23 +72,19 @@ def token_generation(
 @app.get("/department/all",response_model = list[DepartmentResponse])
 def get_all_dept(
     context = Depends(get_admin_context)):
-    # db : Session = Depends(get_db), 
-    # user_log : Users = Depends(get_current_user)):
+   
     return fetch_dept(context["db"] , context["current_user"])
 
 @app.get("/employee/all" , response_model = list[EmployeeResponse])
 def get_all_emp_details(
     context = Depends(get_admin_context)):
-    # db : Session = Depends(get_db),
-    # user_log : Users = Depends(get_current_user)):
+
     return get_all_emp(context["db"] , context["current_user"])
 
 @app.get("/users/all" , response_model = list[UsersResponse])
 def get_all_users(
-    # db: Session = Depends(get_db),
-    # current_user :dict = Depends(verify_admin),
     context = Depends(get_admin_context)):
-    # user_log : Users = Depends(get_current_user)):
+   
     return fetch_all_user(context["db"],context["current_user"])
 
 #------------------------------------------------------------------------------
@@ -134,9 +126,7 @@ def update_emp_func(
     emp : EmployeeSchema, 
     background_tasks : BackgroundTasks,
     context = Depends(get_admin_context)):
-    # db : Session = Depends(get_db),
-    # current_user : dict = Depends(verify_admin),
-    # user_log : Users = Depends(get_current_user)):
+   
     return update_emp(context["db"] , emp_id , emp , background_tasks , context["current_user"])
 
 #-------------delete-----------------------------------------------------
@@ -157,9 +147,7 @@ def delete_dept_func(
 def delete_user_func(
     userid : str,
     context = Depends(get_admin_context)):
-    # db : Session = Depends(get_db),
-    # user_log : Users = Depends(get_current_user),
-    # current_user : dict = Depends(verify_admin)):
+    
     return delete_user(context["db"] , userid , context["current_user"])
  
 
