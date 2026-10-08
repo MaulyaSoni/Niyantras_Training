@@ -14,7 +14,6 @@ from operations.department import create_dept_data , fetch_dept , delete_dept
 from operations.user import create_user , create_admin
 from operations.user import fetch_all_user , delete_user
 from operations.token import create_token
-from dependencies.admin import  verify_admin
 from dependencies.context import get_admin_context
 from security.user import authenticate_user , create_access_token , get_current_user
 
